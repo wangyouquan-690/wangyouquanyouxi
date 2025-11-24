@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>外出打工 - 我是“权”能王</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
+        body { background: url("打工页面背景图.jpg") no-repeat center; background-size: cover; min-height: 100vh; padding: 20px; color: #fff; }
+        /* 顶部导航 */
+        .header { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); padding: 12px 20px; border-radius: 10px; margin-bottom: 30px; }
+        .header-title { font-size: 20px; font-weight: bold; background: linear-gradient(135deg, #ffd700, #ff9500); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .back-btn { padding: 8px 16px; border: none; border-radius: 6px; background: linear-gradient(135deg, #ff9500, #ff6b00); color: #fff; cursor: pointer; transition: transform 0.3s; }
+        .back-btn:hover { transform: translateY(-2px); }
+        /* 状态栏（新增人气属性） */
+        .status-bar { max-width: 1200px; margin: 0 auto 20px; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .status-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .status-icon { color: #ffd700; }
+        /* 打工面板 */
+        .work-panel { max-width: 1200px; margin: 0 auto; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; }
+        .panel-title { font-size: 18px; text-align: center; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 20px; }
+        .work-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        /* 同一属性整合卡片 */
+        .work-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; }
+        .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .card-icon { font-size: 28px; color: #ffd700; }
+        .card-title { font-size: 18px; font-weight: bold; }
+        /* 级别切换栏 */
+        .level-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .level-tab { flex: 1; padding: 8px 0; text-align: center; border: none; border-radius: 4px; background: rgba(255,255,255,0.2); color: #fff; cursor: pointer; }
+        .level-tab.active { background: #ffd700; color: #000; font-weight: bold; }
+        /* 工作信息区 */
+        .work-info { margin-bottom: 15px; line-height: 1.8; }
+        .work-btn { width: 100%; padding: 10px 0; border: none; border-radius: 6px; background: linear-gradient(135deg, #ffd700, #ff9500); color: #333; cursor: pointer; font-weight: bold; }
+        .work-btn:disabled { background: rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); cursor: not-allowed; }
+        .cd-tip { font-size: 14px; color: #ff4444; margin-top: 10px; text-align: center; display: none; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="header-title">外出打工中心</div>
+        <button class="back-btn" onclick="window.location.href='A现代养成游戏-我是“权”能王主界面.htm'">返回主界面</button>
+    </div>
+
+    <!-- 角色状态（新增人气属性） -->
+    <div class="status-bar">
+        <div class="status-item"><span class="status-icon">💰</span> 当前金币：<span id="currentCoin">0</span></div>
+        <div class="status-item"><span class="status-icon">💻</span> 编程：<span id="programming">0</span></div>
+        <div class="status-item"><span class="status-icon">📚</span> 口才：<span id="eloquence">0</span></div>
+        <div class="status-item"><span class="status-icon">🎨</span> 医术：<span id="medical">0</span></div>
+        <div class="status-item"><span class="status-icon">💪</span> 体能：<span id="physical">0</span></div>
+        <div class="status-item"><span class="status-icon">✍️</span> 灵感：<span id="inspiration">0</span></div>
+        <div class="status-item"><span class="status-icon">🔥</span> 人气：<span id="popularity">0</span></div>
+        <div class="status-item"><span class="status-icon">⏱️</span> 打工状态：<span id="workStatus">空闲</span></div>
+    </div>
+
+    <!-- 打工面板（同一属性整合卡片） -->
+    <div class="work-panel">
+        <div class="panel-title">可选择的打工项目（需满足属性要求）</div>
+        <div class="work-list">
+            <!-- 编程属性卡片 -->
+            <div class="work-card">
+                <div class="card-header">
+                    <div class="card-icon">💻</div>
+                    <div class="card-title">编程属性 - 代码相关工作</div>
+                </div>
+                <div class="level-tabs">
+                    <button class="level-tab active" data-type="programming" data-level="初级">初级</button>
+                    <button class="level-tab" data-type="programming" data-level="中级">中级</button>
+                    <button class="level-tab" data-type="programming" data-level="高级">高级</button>
+                </div>
+                <div class="work-info">
+                    <div>工作名称：基础代码录入</div>
+                    <div>要求：编程≥40</div>
+                    <div>奖励：5000金币</div>
+                    <div>工时：12秒</div>
+                </div>
+                <button class="work-btn" data-require="programming" data-value="40" data-time="12" data-coin="5000" onclick="startWork(this)">开始打工</button>
+                <div class="cd-tip">打工中，剩余X秒</div>
+            </div>
+
+            <!-- 口才属性卡片 -->
+            <div class="work-card">
+                <div class="card-header">
+                    <div class="card-icon">📚</div>
+                    <div class="card-title">口才属性 - 沟通相关工作</div>
+                </div>
+                <div class="level-tabs">
+                    <button class="level-tab active" data-type="eloquence" data-level="初级">初级</button>
+                    <button class="level-tab" data-type="eloquence" data-level="中级">中级</button>
+                    <button class="level-tab" data-type="eloquence" data-level="高级">高级</button>
+                </div>
+                <div class="work-info">
+                    <div>工作名称：电话客服接线</div>
+                    <div>要求：口才≥35</div>
+                    <div>奖励：1000金币</div>
+                    <div>工时：10秒</div>
+                </div>
+                <button class="work-btn" data-require="eloquence" data-value="35" data-time="10" data-coin="1000" onclick="startWork(this)">开始打工</button>
+                <div class="cd-tip">打工中，剩余X秒</div>
+            </div>
+
+            <!-- 医术属性卡片 -->
+            <div class="work-card">
+                <div class="card-header">
+                    <div class="card-icon">🏥</div>
+                    <div class="card-title">医术属性 - 创作相关工作</div>
+                </div>
+                <div class="level-tabs">
+                    <button class="level-tab active" data-type="medical" data-level="初级">初级</button>
+                    <button class="level-tab" data-type="medical" data-level="中级">中级</button>
+                    <button class="level-tab" data-type="medical" data-level="高级">高级</button>
+                </div>
+                <div class="work-info">
+                    <div>工作名称：简单药单处理护工</div>
+                    <div>要求：医术≥80</div>
+                    <div>奖励：4590金币</div>
+                    <div>工时：15秒</div>
+                </div>
+                <button class="work-btn" data-require="art" data-value="80" data-time="15" data-coin="4590" onclick="startWork(this)">开始打工</button>
+                <div class="cd-tip">打工中，剩余X秒</div>
+            </div>
+
+            <!-- 体能属性卡片 -->
+            <div class="work-card">
+                <div class="card-header">
+                    <div class="card-icon">💪</div>
+                    <div class="card-title">体能属性 - 体力相关工作</div>
+                </div>
+                <div class="level-tabs">
+                    <button class="level-tab active" data-type="physical" data-level="初级">初级</button>
+                    <button class="level-tab" data-type="physical" data-level="中级">中级</button>
+                    <button class="level-tab" data-type="physical" data-level="高级">高级</button>
+                </div>
+                <div class="work-info">
+                    <div>工作名称：快递包裹分拣</div>
+                    <div>要求：体能≥30</div>
+                    <div>奖励：3000金币 + 体能+5</div>
+                    <div>工时：8秒</div>
+                </div>
+                <button class="work-btn" data-require="physical" data-value="30" data-time="8" data-coin="3000" data-stamina="5" onclick="startWork(this)">开始打工</button>
+                <div class="cd-tip">打工中，剩余X秒</div>
+            </div>
+
+            <!-- 灵感属性卡片 -->
+            <div class="work-card">
+                <div class="card-header">
+                    <div class="card-icon">✍️</div>
+                    <div class="card-title">灵感属性 - 内容相关工作</div>
+                </div>
+                <div class="level-tabs">
+                    <button class="level-tab active" data-type="inspiration" data-level="初级">初级</button>
+                    <button class="level-tab" data-type="inspiration" data-level="中级">中级</button>
+                    <button class="level-tab" data-type="inspiration" data-level="高级">高级</button>
+                </div>
+                <div class="work-info">
+                    <div>工作名称：短句文案撰写</div>
+                    <div>要求：灵感≥135</div>
+                    <div>奖励：2000金币</div>
+                    <div>工时：10秒</div>
+                </div>
+                <button class="work-btn" data-require="inspiration" data-value="135" data-time="10" data-coin="2000" onclick="startWork(this)">开始打工</button>
+                <div class="cd-tip">打工中，剩余X秒</div>
+            </div>
+
+            <!-- 人气属性卡片 -->
+            <div class="work-card">
+                <div class="card-header">
+                    <div class="card-icon">🔥</div>
+                    <div class="card-title">人气属性 - 社交相关工作</div>
+                </div>
+                <div class="level-tabs">
+                    <button class="level-tab active" data-type="popularity" data-level="初级">初级</button>
+                    <button class="level-tab" data-type="popularity" data-level="中级">中级</button>
+                    <button class="level-tab" data-type="popularity" data-level="高级">高级</button>
+                </div>
+                <div class="work-info">
+                    <div>工作名称：粉丝群消息维护</div>
+                    <div>要求：人气≥30</div>
+                    <div>奖励：3500金币</div>
+                    <div>工时：8秒</div>
+                </div>
+                <button class="work-btn" data-require="popularity" data-value="30" data-time="8" data-coin="3500" onclick="startWork(this)">开始打工</button>
+                <div class="cd-tip">打工中，剩余X秒</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 工作数据配置（对应各属性初/中/高级）
+        const workData = {
+            programming: {
+                初级: { name: '基础代码录入', req: 40, time: 12, coin: 5000, prop: null, propVal: 0 },
+                中级: { name: '模块功能调试', req: 90, time: 18, coin: 8000, prop: null, propVal: 0 },
+                高级: { name: '项目框架优化', req: 320, time: 25, coin: 17000, prop: null, propVal: 0 }
+            },
+            eloquence: {
+                初级: { name: '电话客服接线', req: 35, time: 10, coin: 1000, prop: null, propVal: 0 },
+                中级: { name: '小型活动主持', req: 85, time: 15, coin: 6500, prop: null, propVal: 0 },
+                高级: { name: '商务谈判协助', req: 275, time: 21, coin: 10000, prop: null, propVal: 0 }
+            },
+            medical: {
+                初级: { name: '简单药单处理护工', req: 80, time: 15, coin: 4590, prop: null, propVal: 0 },
+                中级: { name: '药方配置写稿医生', req: 120, time: 50, coin: 7000, prop: null, propVal: 0 },
+                高级: { name: '手术临床分镜医师', req: 450, time: 128, coin: 31000, prop: null, propVal: 0 }
+            },
+           physical: {
+                初级: { name: '快递包裹分拣', req: 30, time: 8, coin: 3000, prop: 'physical', propVal: 5 },
+                中级: { name: '户外物料搬运', req: 50, time: 12, coin: 5000, prop: 'physical', propVal: 8 },
+                高级: { name: '场馆设备装卸', req: 70, time: 18, coin: 8000, prop: 'physical', propVal: 12 }
+            },
+            inspiration: {
+                初级: { name: '短句文案撰写', req: 135, time: 10, coin: 2000, prop: null, propVal: 0 },
+                中级: { name: '公众号初稿创作', req: 275, time: 17, coin: 6000, prop: null, propVal: 0 },
+                高级: { name: '品牌 slogan 策划', req: 935, time: 25, coin: 90000, prop: null, propVal: 0 }
+            },
+            popularity: {
+                初级: { name: '粉丝群消息维护', req: 30, time: 8, coin: 3500, prop: null, propVal: 0 },
+                中级: { name: '线下应援活动协助', req: 150, time: 12, coin: 5500, prop: null, propVal: 0 },
+                高级: { name: '小型粉丝见面会筹备', req: 760, time: 38, coin: 28500, prop: null, propVal: 0 }
+            }
+        };
+
+       // 2. 初始化数据（与主页面统一存储键）
+const STORAGE_KEY_CHAR = 'characterAttrs'; // 和主页面的'characterAttrs'对应
+let currentCoin = parseInt(localStorage.getItem('currentCoin')) || 0;
+// 读取主页面的属性（字段名和主页面保持一致：programming/eloquence等）
+const characterAttrs = JSON.parse(localStorage.getItem(STORAGE_KEY_CHAR)) || { 
+    programming: 0, // 对应主页面的programming
+    eloquence: 0,
+    medical: 0, // 主页面没有art，若主页面要加需同步；暂时保留
+    physical: 0, // 对应主页面的physical
+    inspiration: 0, // 对应主页面的inspiration
+    popularity: 0 // 对应主页面的popularity
+};
+let workInterval = null;
+
+        // 3. 页面加载时，同步主页面的属性
+window.onload = () => {
+    document.getElementById('currentCoin').innerText = currentCoin;
+    // 字段名和主页面保持一致：programming/physical等
+    document.getElementById('programming').innerText = characterAttrs.programming || 0; // 打工页面的id是program，对应主页面的programming
+    document.getElementById('eloquence').innerText = characterAttrs.eloquence || 0;
+    document.getElementById('medical').innerText = characterAttrs.medical || 0;
+    document.getElementById('physical').innerText = characterAttrs.physical || 0; // 打工页面的id是stamina，对应主页面的physical
+    document.getElementById('inspiration').innerText = characterAttrs.inspiration || 0;
+    document.getElementById('popularity').innerText = characterAttrs.popularity || 0;
+};
+
+        // 4. 级别切换逻辑（修复高级标签无data-type问题）
+        document.querySelectorAll('.level-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const type = this.dataset.type; // 现在所有标签都有data-type
+                const level = this.dataset.level;
+                const card = this.closest('.work-card');
+                const tabs = card.querySelectorAll('.level-tab');
+                const infoDiv = card.querySelector('.work-info');
+                const workBtn = card.querySelector('.work-btn');
+                const data = workData[type][level];
+
+                // 切换标签激活状态
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // 更新工作信息
+                infoDiv.innerHTML = `
+                    <div>工作名称：${data.name}</div>
+                    <div>要求：${getAttrName(type)}≥${data.req}</div>
+                    <div>奖励：${data.coin}金币${data.prop ? ' + ' + getAttrName(data.prop) + '+' + data.propVal : ''}</div>
+                    <div>工时：${data.time}秒</div>
+                `;
+
+                // 清空按钮原有属性，再更新新属性
+                Object.keys(workBtn.dataset).forEach(key => delete workBtn.dataset[key]);
+                workBtn.dataset.require = type;
+                workBtn.dataset.value = data.req;
+                workBtn.dataset.time = data.time;
+                workBtn.dataset.coin = data.coin;
+                if (data.prop) {
+                    workBtn.dataset[data.prop] = data.propVal;
+                }
+            });
+        });
+
+        // 5. 打工核心逻辑
+function startWork(btn) {
+    if (workInterval) {
+        alert('当前有打工任务进行中，请等待完成后再操作~');
+        return;
+    }
+
+    const requireAttr = btn.dataset.require;
+    const requireValue = parseInt(btn.dataset.value);
+    const workTime = parseInt(btn.dataset.time);
+    const coinReward = parseInt(btn.dataset.coin);
+    const prop = Object.keys(btn.dataset).find(key => key !== 'require' && key !== 'value' && key !== 'time' && key !== 'coin');
+    const propVal = prop ? parseInt(btn.dataset[prop]) : 0;
+    
+    const card = btn.closest('.work-card');
+    const cdTip = card.querySelector('.cd-tip');
+    const allBtns = document.querySelectorAll('.work-btn');
+
+    // 属性校验
+    if (characterAttrs[requireAttr] < requireValue) {
+        alert(`属性不足！需${getAttrName(requireAttr)}≥${requireValue}才能打工`);
+        return;
+    }
+
+    // 开始打工
+    allBtns.forEach(b => b.disabled = true);
+    let remainTime = workTime;
+    cdTip.style.display = 'block';
+    cdTip.innerText = `打工中，剩余${remainTime}秒`;
+    document.getElementById('workStatus').innerText = '打工中';
+
+    workInterval = setInterval(() => {
+        remainTime--;
+        cdTip.innerText = `打工中，剩余${remainTime}秒`;
+
+        if (remainTime <= 0) {
+            clearInterval(workInterval);
+            workInterval = null;
+
+            // 更新金币
+            currentCoin += coinReward;
+            localStorage.setItem('currentCoin', currentCoin);
+            document.getElementById('currentCoin').innerText = currentCoin;
+
+            // 更新属性 👉👉👉 这就是位置3对应的区域 👈👈👈
+            let rewardText = `${coinReward}金币`;
+            if (prop) {
+                // 字段映射：打工页面的stamina对应主页面的physical
+                const mainPageProp = prop === 'stamina' ? 'physical' : prop; 
+                characterAttrs[mainPageProp] += propVal;
+                // 同步页面显示（打工页面的id对应）
+                const workPageId = prop === 'physical' ? 'stamina' : mainPageProp;
+                document.getElementById(workPageId).innerText = characterAttrs[mainPageProp];
+                rewardText += `、${getAttrName(prop)}+${propVal}`;
+                // 存储到主页面的键里
+                localStorage.setItem(STORAGE_KEY_CHAR, JSON.stringify(characterAttrs));
+            }
+
+            // 恢复状态
+            alert(`打工完成！获得奖励：${rewardText}`);
+            allBtns.forEach(b => b.disabled = false);
+            cdTip.style.display = 'none';
+            document.getElementById('workStatus').innerText = '空闲';
+        }
+    }, 1000);
+}
+
+        // 辅助函数：获取属性名称
+        function getAttrName(attrKey) {
+            const attrMap = {
+                programming: '编程', eloquence: '口才', medical: '医术',
+                physical: '体能', inspiration: '灵感', popularity: '人气'
+            };
+            return attrMap[attrKey];
+        }
+
+        window.onbeforeunload = () => clearInterval(workInterval);
+    </script>
+</body>
+</html>

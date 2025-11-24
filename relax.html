@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>自我放松</title>
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
+        body {background-color: #f0f0f0;}
+        .container {width: 1280px;height: 720px;margin: 0 auto;background-image: url("D:/忘忧泉小程序实验室/放松页面背景.jpg");background-size: cover;position: relative;}
+        .header {position: absolute;top: 20px;left: 20px;right: 20px;display: flex;justify-content: space-between;align-items: center;color: #fff;}
+        .back-btn {width: 120px;height: 40px;background-color: #007bff;border: none;border-radius: 8px;color: #fff;font-size: 16px;cursor: pointer;}
+        .back-btn:hover {background-color: #0056b3;}
+        .relax-list {position: absolute;top: 100px;left: 50%;transform: translateX(-50%);display: flex;flex-wrap: wrap;gap: 40px;justify-content: center;width: 80%;}
+        .relax-item {width: 300px;height: 250px;background-color: rgba(255,255,255,0.9);border-radius: 10px;padding: 25px;text-align: center;cursor: pointer;transition: transform 0.3s;}
+        .relax-item:hover {transform: scale(1.05);}
+        .relax-icon {width: 80px;height: 80px;margin: 0 auto 20px;border-radius: 50%;background-color: #ff9900;display: flex;align-items: center;justify-content: center;position: relative;}
+        .relax-name {font-size: 18px;font-weight: bold;margin-bottom: 15px;}
+        .relax-slogan {font-size: 12px;color: #666; margin-bottom: 8px; font-style: italic;}
+        .relax-effect {font-size: 14px;color: #333;}
+
+        /* 1. 阅读书籍 - 打开的书图标 */
+        .book-icon {width: 45px;height: 35px;position: relative;}
+        .book-cover {width: 100%;height: 100%;background-color: #fff;border-radius: 3px;position: relative;}
+        .book-cover::before {content: '';position: absolute;top: 0;left: 50%;width: 2px;height: 100%;background-color: #ff9900;}
+        .book-page {position: absolute;top: 3px;left: 3px;right: 3px;bottom: 3px;background-color: #f8f8f8;border-radius: 2px;}
+        .book-page::before {content: '';position: absolute;top: 5px;left: 10px;width: 30%;height: 2px;background-color: #ccc;}
+        .book-page::after {content: '';position: absolute;top: 12px;left: 10px;width: 45%;height: 2px;background-color: #ccc;}
+
+        /* 2. 户外散步 - 脚步图标 */
+        .foot-icon {width: 40px;height: 40px;position: relative;transform: rotate(-15deg);}
+        .foot-left, .foot-right {width: 18px;height: 22px;background-color: #fff;border-radius: 50% 50% 30% 30%;position: absolute;}
+        .foot-left {top: 0;left: 0;transform: rotate(10deg);}
+        .foot-right {bottom: 0;right: 0;transform: rotate(-20deg);}
+        .foot-toe {width: 6px;height: 6px;background-color: #ff9900;border-radius: 50%;position: absolute;}
+        .foot-left .foot-toe {top: 3px;right: 3px;}
+        .foot-right .foot-toe {top: 3px;right: 3px;}
+
+        /* 3. 听音乐 - 高音音符图标 */
+        .music-icon {width: 35px;height: 40px;position: relative;}
+        .music-note {position: absolute;bottom: 0;width: 8px;background-color: #fff;}
+        .note1 {height: 35px;border-radius: 4px 4px 0 0;left: 0;}
+        .note2 {height: 20px;border-radius: 4px 4px 0 0;left: 12px;bottom: 10px;}
+        .note3 {height: 28px;border-radius: 4px 4px 0 0;left: 24px;bottom: 5px;}
+        .music-dot {width: 6px;height: 6px;background-color: #fff;border-radius: 50%;position: absolute;top: 5px;right: 0;}
+
+        /* 4. 冥想打坐 - 优化盘腿坐姿（更自然的交叉腿） */
+        .meditation-icon {width: 45px;height: 45px;position: relative;}
+        /* 头部 */
+        .meditation-head {width: 14px;height: 14px;background-color: #fff;border-radius: 50%;position: absolute;top: 3px;left: 50%;transform: translateX(-50%);}
+        /* 身体（椭圆躯干） */
+        .meditation-body {width: 22px;height: 25px;background-color: #fff;border-radius: 12px;position: absolute;top: 15px;left: 50%;transform: translateX(-50%);}
+        /* 盘腿坐姿 - 左腿（叠在右腿上） */
+        .leg-left {width: 20px;height: 9px;background-color: #fff;border-radius: 5px;position: absolute;bottom: 2px;left: 50%;transform: translateX(-70%) rotate(-20deg);}
+        /* 盘腿坐姿 - 右腿（被左腿覆盖） */
+        .leg-right {width: 20px;height: 9px;background-color: #fff;border-radius: 5px;position: absolute;bottom: 0;right: 50%;transform: translateX(70%) rotate(20deg);}
+        /* 双手结印（合十姿势） */
+        .meditation-hands {width: 8px;height: 10px;background-color: #fff;border-radius: 4px;position: absolute;top: 22px;left: 50%;transform: translateX(-50%);}
+        .meditation-hands::after {content: '';width: 6px;height: 8px;background-color: #ff9900;border-radius: 3px;position: absolute;top: 1px;left: 1px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>放松休闲空间</h1>
+            <button class="back-btn" onclick="window.location.href='A现代养成游戏-我是“权”能王主界面.htm'">返回主界面</button>
+        </div>
+        <div class="relax-list">
+            <!-- 阅读书籍 -->
+            <div class="relax-item" onclick="relaxAction('inspiration', 10, '阅读书籍')">
+                <div class="relax-icon">
+                    <div class="book-icon">
+                        <div class="book-cover">
+                            <div class="book-page"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relax-name">阅读书籍</div>
+                <div class="relax-effect">静心阅读经典名著，灵感+10，无金币消耗</div>
+            </div>
+            <!-- 户外散步 -->
+            <div class="relax-item" onclick="relaxAction('physical', 8, '户外散步')">
+                <div class="relax-icon">
+                    <div class="foot-icon">
+                        <div class="foot-left">
+                            <div class="foot-toe"></div>
+                        </div>
+                        <div class="foot-right">
+                            <div class="foot-toe"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relax-name">户外散步</div>
+                <div class="relax-effect">呼吸新鲜空气，体能+8，无金币消耗</div>
+            </div>
+            <!-- 听音乐 -->
+            <div class="relax-item" onclick="relaxAction('inspiration', 5, '听音乐', true)">
+                <div class="relax-icon">
+                    <div class="music-icon">
+                        <div class="music-note note1"></div>
+                        <div class="music-note note2"></div>
+                        <div class="music-note note3"></div>
+                        <div class="music-dot"></div>
+                    </div>
+                </div>
+                <div class="relax-name">听音乐</div>
+                <div class="relax-effect">聆听舒缓旋律，灵感+5，实际年龄-1，无金币消耗</div>
+            </div>
+            <!-- 冥想打坐 -->
+            <div class="relax-item" onclick="relaxAction('medical', 12, '冥想打坐')">
+                <div class="relax-icon">
+                    <div class="meditation-icon">
+                        <div class="meditation-head"></div>
+                        <div class="meditation-body">
+                            <div class="meditation-hands"></div>
+                        </div>
+                        <div class="meditation-leg leg-right"></div>
+                        <div class="meditation-leg leg-left"></div>
+                    </div>
+                </div>
+                <div class="relax-name">冥想打坐</div>
+                <div class="relax-slogan">烦恼本无忧，不捡自然无</div>
+                <div class="relax-effect">调养身心，医术+12，无金币消耗</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 初始化属性数据
+        let characterAttrs = JSON.parse(localStorage.getItem('characterAttrs')) || {
+            programming: 120,
+            eloquence: 150,
+            medical: 90,
+            physical: 180,
+            inspiration: 230,
+            popularity: 2634
+        };
+        // 初始化实际年龄（默认17，存储到localStorage持久化）
+        let actualAge = parseInt(localStorage.getItem('actualAge')) || 17;
+
+        // 放松行为逻辑（新增ageReduce参数控制年龄减少）
+        function relaxAction(attrKey, attrAdd, actionName, ageReduce = false) {
+            // 加属性
+            characterAttrs[attrKey] += attrAdd;
+            localStorage.setItem('characterAttrs', JSON.stringify(characterAttrs));
+
+            // 听音乐额外逻辑：实际年龄-1（最低17岁，不低于初始年龄）
+            let ageTips = '';
+            if (ageReduce && actualAge > 17) {
+                actualAge--;
+                localStorage.setItem('actualAge', actualAge);
+                ageTips = `，实际年龄-1（当前${actualAge}岁）`;
+            } else if (ageReduce && actualAge <= 17) {
+                ageTips = `，实际年龄已达最低17岁，无法再减少`;
+            }
+
+            // 提示
+            alert(`【${actionName}】放松成功！${getAttrName(attrKey)}+${attrAdd}${ageTips}`);
+            
+            // 防止重复点击（5秒冷却）
+            const item = event.currentTarget;
+            item.style.pointerEvents = 'none';
+            item.style.opacity = '0.7';
+            setTimeout(() => {
+                item.style.pointerEvents = 'auto';
+                item.style.opacity = '1';
+            }, 5000);
+        }
+
+        // 属性名称映射
+        function getAttrName(key) {
+            const map = {
+                programming: '编程',
+                eloquence: '口才',
+                medical: '医术',
+                physical: '体能',
+                inspiration: '灵感',
+                popularity: '人气'
+            };
+            return map[key] || key;
+        }
+    </script>
+</body>
+</html>

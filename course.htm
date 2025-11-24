@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>进修课程</title>
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
+        body {background-color: #f0f0f0;}
+        .container {width: 1280px;height: 720px;margin: 0 auto;background-image: url("D:/忘忧泉小程序实验室/课程页面背景.jpg");background-size: cover;position: relative;}
+        .header {position: absolute;top: 20px;left: 20px;right: 20px;display: flex;justify-content: space-between;align-items: center;color: #fff;}
+        .back-btn {width: 120px;height: 40px;background-color: #007bff;border: none;border-radius: 8px;color: #fff;font-size: 16px;cursor: pointer;}
+        .back-btn:hover {background-color: #0056b3;}
+        .course-list {position: absolute;top: 100px;left: 50%;transform: translateX(-50%);display: flex;flex-wrap: wrap;gap: 30px;justify-content: center;width: 90%;}
+        .course-card {width: 280px;height: 350px;background-color: rgba(255,255,255,0.8);border-radius: 10px;padding: 20px;text-align: center;display: flex;flex-direction: column;justify-content: space-between;}
+        .course-icon {width: 100px;height: 100px;margin: 0 auto;border-radius: 50%;background-color: #007bff;display: flex;align-items: center;justify-content: center;}
+        /* 图标容器样式统一，内部用SVG绘制 */
+        .course-icon svg {width: 60px;height: 60px;}
+        .course-name {font-size: 20px;font-weight: bold;margin: 15px 0;}
+        .course-desc {font-size: 14px;color: #666;margin-bottom: 20px;flex-grow: 1;}
+        .course-cost {font-size: 16px;color: #ff3333;font-weight: bold;margin-bottom: 15px;}
+        .study-btn {width: 100%;height: 40px;background-color: #28a745;border: none;border-radius: 8px;color: #fff;font-size: 16px;cursor: pointer;}
+        .study-btn:hover {background-color: #218838;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>进修课程中心</h1>
+            <button class="back-btn" onclick="window.location.href='A现代养成游戏-我是“权”能王主界面.htm'">返回主界面</button>
+        </div>
+        <div class="course-list">
+            <!-- 编程课程（电脑图标 - SVG绘制） -->
+            <div class="course-card">
+                <div class="course-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="15" width="60" height="45" rx="3" fill="#fff"/>
+                        <rect x="30" y="25" width="40" height="25" fill="#007bff"/>
+                        <rect x="15" y="60" width="70" height="10" rx="2" fill="#fff"/>
+                        <line x1="45" y1="60" x2="45" y2="15" stroke="#fff" stroke-width="2"/>
+                        <line x1="55" y1="60" x2="55" y2="15" stroke="#fff" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="course-name">高级编程实战</div>
+                <div class="course-desc">学习前沿编程技术，提升逻辑思维与代码能力，完成后编程属性+20</div>
+                <div class="course-cost">消耗金币：5000</div>
+                <button class="study-btn" onclick="studyCourse('programming', 20, 5000, this.parentElement)">立即学习</button>
+            </div>
+            <!-- 口才课程（麦克风图标 - SVG绘制） -->
+            <div class="course-card">
+                <div class="course-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="40" r="15" fill="#fff"/>
+                        <path d="M50 55C50 65 35 75 35 75H65C65 75 50 65 50 55Z" fill="#fff"/>
+                        <circle cx="50" cy="30" r="5" fill="#007bff"/>
+                        <path d="M45 40H55M40 45H60" stroke="#007bff" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="course-name">演讲与表达</div>
+                <div class="course-desc">提升沟通表达与临场应变能力，完成后口才属性+20</div>
+                <div class="course-cost">消耗金币：4000</div>
+                <button class="study-btn" onclick="studyCourse('eloquence', 20, 4000, this.parentElement)">立即学习</button>
+            </div>
+            <!-- 医术课程（中药图标 - SVG绘制） -->
+            <div class="course-card">
+                <div class="course-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 20C35 20 25 35 25 50C25 65 35 80 50 80C65 80 75 65 75 50C75 35 65 20 50 20Z" fill="#28a745"/>
+                        <path d="M50 30L50 70" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M35 45L65 45" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M35 55L65 55" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="5" fill="#fff"/>
+                    </svg>
+                </div>
+                <div class="course-name">中医基础理论</div>
+                <div class="course-desc">学习中医辨证施治，掌握基础诊疗技能，完成后医术属性+20</div>
+                <div class="course-cost">消耗金币：4500</div>
+                <button class="study-btn" onclick="studyCourse('medical', 20, 4500, this.parentElement)">立即学习</button>
+            </div>
+            <!-- 体能课程（运动图标 - SVG绘制） -->
+            <div class="course-card">
+                <div class="course-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="30" r="10" fill="#ff6600"/>
+                        <path d="M50 40L50 60" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M50 60L35 80M50 60L65 80" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M50 50L30 45M50 50L70 45" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="course-name">极限体能训练</div>
+                <div class="course-desc">增强体魄与耐力，突破身体极限，完成后体能属性+20</div>
+                <div class="course-cost">消耗金币：3500</div>
+                <button class="study-btn" onclick="studyCourse('physical', 20, 3500, this.parentElement)">立即学习</button>
+            </div>
+            <!-- 新增：写小说课程（书籍图标 - SVG绘制） -->
+            <div class="course-card">
+                <div class="course-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="25" y="20" width="50" height="60" rx="3" fill="#fff"/>
+                        <rect x="30" y="25" width="40" height="50" fill="#ffcc00"/>
+                        <path d="M35 35H65M35 45H65M35 55H65M35 65H65M35 75H65" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="course-name">创意小说创作</div>
+                <div class="course-desc">学习情节构思与文字表达，激发创作潜能，完成后灵感属性+20</div>
+                <div class="course-cost">消耗金币：4800</div>
+                <button class="study-btn" onclick="studyCourse('inspiration', 20, 4800, this.parentElement)">立即学习</button>
+            </div>
+            <!-- 新增：直播自媒体课程（粉丝图标 - SVG绘制） -->
+            <div class="course-card">
+                <div class="course-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="35" cy="35" r="10" fill="#fff"/>
+                        <circle cx="65" cy="35" r="10" fill="#fff"/>
+                        <circle cx="50" cy="55" r="15" fill="#fff"/>
+                        <circle cx="35" cy="35" r="4" fill="#007bff"/>
+                        <circle cx="65" cy="35" r="4" fill="#007bff"/>
+                        <path d="M45 60H55" stroke="#007bff" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="course-name">直播自媒体运营</div>
+                <div class="course-desc">掌握直播技巧与粉丝运营，提升曝光度，完成后人气属性+20</div>
+                <div class="course-cost">消耗金币：5200</div>
+                <button class="study-btn" onclick="studyCourse('popularity', 20, 5200, this.parentElement)">立即学习</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 初始化数据
+        let currentCoin = parseInt(localStorage.getItem('currentCoin')) || 8765920;
+        let characterAttrs = JSON.parse(localStorage.getItem('characterAttrs')) || {
+            programming: 120,
+            eloquence: 150,
+            medical: 90,
+            physical: 180,
+            inspiration: 230,
+            popularity: 2634
+        };
+
+        // 学习课程逻辑
+        function studyCourse(attrKey, attrAdd, coinCost, cardElem) {
+            if (currentCoin < coinCost) {
+                alert('金币不足，无法学习该课程！');
+                return;
+            }
+
+            // 扣金币
+            currentCoin -= coinCost;
+            localStorage.setItem('currentCoin', currentCoin);
+
+            // 加属性
+            characterAttrs[attrKey] += attrAdd;
+            localStorage.setItem('characterAttrs', JSON.stringify(characterAttrs));
+
+            // 提示
+            alert(`学习成功！${getAttrName(attrKey)}+${attrAdd}，剩余金币：${currentCoin}`);
+            
+            // 按钮置灰冷却（10秒）
+            const btn = cardElem.querySelector('.study-btn');
+            btn.disabled = true;
+            btn.innerText = '学习中...(10s)';
+            let countdown = 10;
+            const timer = setInterval(() => {
+                countdown--;
+                btn.innerText = `学习中...(${countdown}s)`;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerText = '立即学习';
+                }
+            }, 1000);
+        }
+
+        // 属性名称映射
+        function getAttrName(key) {
+            const map = {
+                programming: '编程',
+                eloquence: '口才',
+                medical: '医术',
+                physical: '体能',
+                inspiration: '灵感',
+                popularity: '人气'
+            };
+            return map[key] || key;
+        }
+    </script>
+</body>
+</html>

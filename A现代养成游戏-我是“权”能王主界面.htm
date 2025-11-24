@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我是“权”能王-主界面</title>
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
+        .character{background-color:transparent;}
+        body {background-color: #f0f0f0;}
+        .main-container {position: relative;width: 1280px;height: 720px;margin: 0 auto;background-image: url("D:/忘忧泉小程序实验室/客厅主页面.jpg");background-size: cover;background-repeat: no-repeat;}
+        
+        .top-info {position: absolute;top: 20px;left: 20px;right: 20px;display: flex;justify-content: space-between;align-items: flex-start;}
+        .name-area {display: flex;flex-direction: column;gap: 5px;font-size: 24px;font-weight: bold;color: #fff;}
+        .age-section {font-size: 16px;color: #fff;}
+        
+        /* 音乐按钮左移，放在本周任务旁 */
+        .music-control {position: absolute;top: -36px;left: 270px;z-index: 2;}
+        #musicIcon {width: 64px;height: auto;cursor: pointer;display: block;}
+        
+        .attribute-group {display: flex;gap: 10px;}
+        .attribute-box {width: 80px;height: 30px;border: 2px solid #ccc;border-radius: 5px;display: flex;flex-direction: column;justify-content: center;align-items: center;color: #fff;font-size: 12px;}
+        .attribute-box .value {font-size: 14px;font-weight: bold;}
+        
+        .left-menu {position: absolute;top: 69px;left: 20px;display: flex;flex-direction: column;gap: 2px;}
+        .left-menu-btn {display: flex;align-items: center;gap: 17px;background: transparent;border: none;border-radius: 5px;cursor: pointer;color: #fff;font-size: 18px;padding: 5px 10px;}
+        .left-menu-btn img {width: 200px;height: 220px;} /* 缩小按钮图标 */
+        .left-menu-btn .red-dot {display: inline-block;width: 10px;height: 10px;border-radius: 50%;background-color: red;}
+        
+        .character-area {position: absolute;bottom: 20px;left: 45%;transform: translateX(-50%);text-align: center;}
+        /* 核心：强制显示立绘，固定尺寸+层级 */
+        .character-area .character {
+            width: 400px;
+            height: 420px;
+            margin-bottom: 10px;
+            display: block !important;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .bottom-buttons {position: absolute;bottom: 80px;left: 50%;transform: translateX(-50%);display: flex;gap: 20px;}
+        .bottom-buttons button {width: 100px;height: 35px;border: none;border-radius: 8px;color: #fff;font-size: 14px;cursor: pointer;} /* 缩小底部按钮 */
+        .bottom-buttons button:hover {opacity: 0.9;}
+        /* 为家园互动按钮单独设置绿色背景，匹配原风格 */
+        #homeBtn {background-color: #28a745;}
+        #homeBtn:hover {background-color: #218838;}
+        /* 其他底部按钮保留原蓝色背景 */
+        .bottom-buttons button:not(#homeBtn) {background-color: #007bff;}
+        .bottom-buttons button:not(#homeBtn):hover {background-color: #0056b3;}
+        
+        /* 福利柜往下调整位置，移除外出按钮 */
+        .right-menu {position: absolute;top: 120px;right: 20px;display: flex;flex-direction: column;gap: 20px;}
+        .right-menu-btn {display: flex;align-items: center;gap: 17px;background: transparent;border: none;border-radius: 5px;cursor: pointer;color: #fff;font-size: 18px;padding: 5px 10px;}
+        .right-menu-btn img {width: 200px;height: 220px;} /* 缩小右侧按钮图标 */
+        .right-menu-btn .red-dot {display: inline-block;width: 10px;height: 10px;border-radius: 50%;background-color: red;}
+        
+        /* 移除右下角continue-button容器 */
+        .age-bar {width: 300px;height: 10px;background-color: #ccc;border-radius: 5px;margin: 5px 0;overflow: hidden;}
+        .age-bar .progress {height: 100%;background-color: #007bff;width: 17%;}
+        .age-text {display: flex;justify-content: space-between;font-size: 14px;color: #333;}
+        
+        /* 邪修增寿按钮闪光特效 */
+        #evilBtn {animation: flash 2s infinite;}
+        @keyframes flash {
+            0%, 100% {box-shadow: 0 0 5px #fff;}
+            50% {box-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000;}
+        }
+        
+        /* 打工按钮冷却提示 */
+        .work-cd-tooltip {position: absolute;bottom: 120px;opacity: 0;transition: opacity 0.3s; background-color: rgba(0,0,0,0.8); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 12px; pointer-events: none;}
+        #workBtn:hover + .work-cd-tooltip {opacity: 1;}
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="top-info">
+            <div class="name-area">
+                忘忧泉
+                <div class="age-section">
+                    <div class="age-bar"><div class="progress"></div></div>
+                    <div class="age-text"><span>年龄17</span><span id="ageLimit">寿终正寝上限年龄：100</span></div>
+                </div>
+            </div>
+            <!-- 音乐按钮左移到本周任务旁 -->
+            <div class="music-control">
+                <audio id="bgMusic" src="霍元甲-60.mp3" loop></audio>
+                <img src="音乐播放键720.png" alt="播放音乐" id="musicIcon">
+            </div>
+            <div class="attribute-group">
+                <div class="attribute-box"><span>编程</span><span class="value" id="programming">120</span></div>
+                <div class="attribute-box"><span>口才</span><span class="value" id="eloquence">150</span></div>
+                <div class="attribute-box"><span>医术</span><span class="value" id="medical">90</span></div>
+                <div class="attribute-box"><span>体能</span><span class="value" id="physical">180</span></div>
+                <div class="attribute-box"><span>灵感</span><span class="value" id="inspiration">230</span></div>
+                <div class="attribute-box"><span>人气</span><span class="value" id="popularity">2634</span></div>
+                <div class="attribute-box"><span>金币</span><span class="value" id="coin">8765920+</span></div>
+            </div>
+        </div>
+        <div class="left-menu">
+            <button class="left-menu-btn" onclick="window.location.href='wardrobe.htm'">
+                <img src="百变马丁衣柜.png" alt="百变忘忧泉"><span></span>
+            </button>
+            <button class="left-menu-btn" onclick="window.location.href='pet.htm'">
+                <img src="宠物的房间0.png" alt="宠物空间"><span></span>
+            </button>
+        </div>
+        <div class="character-area">
+            <!-- 核心修复：直接硬编码图片路径，移除JS动态加载 -->
+            <img src="D:/忘忧泉小程序实验室/作家+初始原形态的忘忧泉（2）.png" alt="角色" class="character" id="wearingCostume">
+        </div>
+        <!-- 底部按钮组：新增家园互动按钮（绿色），移除右下角按钮 -->
+        <div class="bottom-buttons">
+            <button id="courseBtn" onclick="window.location.href='course.htm'">进修课程</button>
+            <button id="relaxBtn" onclick="window.location.href='relax.html'">自我放松</button>
+            <button id="evilBtn" onclick="alert('邪修增寿效果触发，寿终正寝上限+2！'); updateAgeLimit()">邪修增寿</button>
+            <button id="workBtn" onclick="window.location.href='work.htm'">外出打工</button>
+            <div class="work-cd-tooltip" id="workCdTip">点击前往打工（冷却中：0分钟）</div>
+            <button id="homeBtn" onclick="window.location.href='homeinteract.htm'">家园互动</button>
+        </div>
+        <div class="right-menu">
+            <!-- 移除外出按钮（原travel.html跳转按钮） -->
+            <button class="right-menu-btn" onclick="window.location.href='welfare.html'">
+                <img src="福利柜.png" alt="福利柜"><span></span><span class=></span>
+            </button>
+        </div>
+        <!-- 移除右下角continue-button容器 -->
+        <div style="position: absolute; top: 23px; left: 120px; background-color: yellow; padding: 5px; border-radius: 3px; z-index: 1;">
+            本周剩余任务：<span id="taskNum">1</span>
+        </div>
+    </div>
+    <script>
+        // 统一存储键名（与换装页面完全一致）
+        const STORAGE_KEYS = {
+            COIN: 'game_currentCoin',
+            CHARACTER: 'characterAttrs',
+            OWNED_COSTUMES: 'game_ownedCostumes',
+            WEARING_SRC: 'game_wearingCostumeSrc',
+            WEARING_TYPE: 'game_wearingCostumeType',
+            AGE_LIMIT: 'ageLimit',
+            WORK_CD: 'workCd'
+        };
+
+        // 页面加载逻辑（仅保留必要功能，移除立绘加载）
+        window.onload = function() {
+            syncCoin();
+            syncAttributes();
+            syncAgeLimit();
+            updateWorkCdTip();
+            setInterval(updateWorkCdTip, 60000);
+        }
+
+        // 金币同步
+        function syncCoin() {
+            const coinElem = document.getElementById('coin');
+            const storedCoin = localStorage.getItem(STORAGE_KEYS.COIN) || localStorage.getItem('currentCoin') || 8765920;
+            coinElem.innerText = `${storedCoin}+`;
+            localStorage.setItem(STORAGE_KEYS.COIN, storedCoin);
+        }
+
+        // 属性同步
+        function syncAttributes() {
+            const storedAttrs = localStorage.getItem(STORAGE_KEYS.CHARACTER) || localStorage.getItem('characterAttrs');
+            if (storedAttrs) {
+                try {
+                    const attrs = JSON.parse(storedAttrs);
+                    document.getElementById('programming').innerText = attrs.programming || 120;
+                    document.getElementById('eloquence').innerText = attrs.eloquence || 150;
+                    document.getElementById('medical').innerText = attrs.medical || 90;
+                    document.getElementById('physical').innerText = attrs.physical || 180;
+                    document.getElementById('inspiration').innerText = attrs.inspiration || 230;
+                    document.getElementById('popularity').innerText = attrs.popularity || 2634;
+                } catch (e) {}
+            }
+        }
+
+        // 年龄上限同步
+        function syncAgeLimit() {
+            const ageLimitElem = document.getElementById('ageLimit');
+            const ageProgress = document.querySelector('.age-bar .progress');
+            const currentAge = 17;
+            const storedLimit = localStorage.getItem(STORAGE_KEYS.AGE_LIMIT) || 100;
+            ageLimitElem.innerText = `寿终正寝上限年龄：${storedLimit}`;
+            ageProgress.style.width = `${(currentAge / storedLimit) * 100}%`;
+        }
+
+        // 音乐控制逻辑
+        const musicIcon = document.getElementById('musicIcon');
+        const bgMusic = document.getElementById('bgMusic'); 
+        let isMusicPlaying = false;
+        if (musicIcon && bgMusic) {
+            musicIcon.addEventListener('click', () => {
+                isMusicPlaying = !isMusicPlaying;
+                if (isMusicPlaying) {
+                    bgMusic.play().catch(err => alert('音乐播放失败，请检查音频文件路径：' + err));
+                    musicIcon.src = "音乐暂停键)720.png";
+                } else {
+                    bgMusic.pause(); 
+                    musicIcon.src = "音乐播放键720.png";
+                }
+            });
+        }
+
+        // 邪修增寿逻辑
+        function updateAgeLimit() {
+            const ageLimitElem = document.getElementById('ageLimit');
+            const ageProgress = document.querySelector('.age-bar .progress');
+            const currentLimit = parseInt(ageLimitElem.innerText.replace('寿终正寝上限年龄：', '')) || 100;
+            const newLimit = currentLimit + 2;
+            ageProgress.style.width = `${(17 / newLimit) * 100}%`;
+            ageLimitElem.innerText = `寿终正寝上限年龄：${newLimit}`;
+            localStorage.setItem(STORAGE_KEYS.AGE_LIMIT, newLimit);
+        }
+
+        // 打工冷却提示更新
+        function updateWorkCdTip() {
+            const now = Date.now();
+            const workCd = localStorage.getItem(STORAGE_KEYS.WORK_CD) || 0;
+            const tipElem = document.getElementById('workCdTip');
+            if (workCd > now) {
+                const leftTime = Math.ceil((workCd - now) / 60000);
+                tipElem.innerText = `打工冷却中：${leftTime}分钟`;
+            } else {
+                tipElem.innerText = '点击前往打工（可立即参与）';
+            }
+        }
+    </script>
+</body>
+</html>
