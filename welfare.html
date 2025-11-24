@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>福利柜</title>
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
+        body {background-color: #f0f0f0;}
+        .container {width: 1280px;height: 720px;margin: 0 auto;background-image: url("D:/忘忧泉小程序实验室/福利页面背景.jpg");background-size: cover;position: relative;}
+        .header {position: absolute;top: 20px;left: 20px;right: 20px;display: flex;justify-content: space-between;align-items: center;color: #fff;}
+        .back-btn {width: 120px;height: 40px;background-color: #007bff;border: none;border-radius: 8px;color: #fff;font-size: 16px;cursor: pointer;}
+        .back-btn:hover {background-color: #0056b3;}
+        .current-time {font-size: 16px;color: #fff;margin-left: 20px;}
+        .welfare-list {position: absolute;top: 120px;left: 50%;transform: translateX(-50%);display: flex;flex-direction: column;gap: 25px;width: 60%;}
+        .welfare-item {display: flex;align-items: center;gap: 20px;background-color: rgba(255,255,255,0.85);border-radius: 10px;padding: 15px;}
+        .welfare-icon {width: 80px;height: 80px;border-radius: 50%;background-color: #ff3366;display: flex;align-items: center;justify-content: center;position: relative;}
+        .welfare-info {flex-grow: 1;}
+        .welfare-title {font-size: 18px;font-weight: bold;margin-bottom: 5px;}
+        .welfare-desc {font-size: 14px;color: #666;}
+        .welfare-btn {width: 120px;height: 40px;background-color: #ffcc00;border: none;border-radius: 8px;color: #333;font-size: 16px;cursor: pointer;font-weight: bold;}
+        .welfare-btn:hover {background-color: #ffbb00;}
+        .welfare-btn:disabled {background-color: #ccc;cursor: not-allowed;}
+        .cd-text {font-size: 14px;color: #ff3333;margin-left: 10px;}
+        /* 1. 每日签到 - 日历图标 */
+        .calendar-icon {width: 40px;height: 40px;position: relative;}
+        .calendar-body {width: 100%;height: 100%;background-color: #fff;border-radius: 4px;}
+        .calendar-header {width: 100%;height: 10px;background-color: #ffcc00;border-top-left-radius: 4px;border-top-right-radius: 4px;}
+        .calendar-date {font-size: 18px;font-weight: bold;color: #ff3366;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);}
+        /* 2. 在线奖励 - 闹钟图标 */
+        .alarm-icon {width: 40px;height: 40px;position: relative;}
+        .alarm-circle {width: 30px;height: 30px;border: 4px solid #fff;border-radius: 50%;position: absolute;top: 5px;left: 5px;}
+        .alarm-hand-hour {width: 2px;height: 8px;background-color: #fff;position: absolute;top: 15px;left: 20px;transform-origin: bottom center;transform: rotate(45deg);}
+        .alarm-hand-minute {width: 2px;height: 12px;background-color: #fff;position: absolute;top: 11px;left: 20px;transform-origin: bottom center;transform: rotate(180deg);}
+        .alarm-bell {width: 12px;height: 8px;background-color: #fff;border-radius: 2px 2px 0 0;position: absolute;top: -2px;left: 14px;}
+        .alarm-bell::after {content: '';width: 4px;height: 4px;border-radius: 50%;background-color: #ffcc00;position: absolute;bottom: -4px;left: 4px;}
+        /* 3. 任务奖励 - Success图标 */
+        .success-icon {width: 40px;height: 40px;position: relative;}
+        .success-circle {width: 30px;height: 30px;border: 4px solid #fff;border-radius: 50%;position: absolute;top: 5px;left: 5px;}
+        .success-check {width: 18px;height: 8px;border-left: 4px solid #fff;border-bottom: 4px solid #fff;transform: rotate(-45deg);position: absolute;top: 15px;left: 10px;}
+        /* 4. 福利礼包 - 礼盒图标 */
+        .gift-icon {width: 40px;height: 40px;position: relative;}
+        .gift-box {width: 30px;height: 25px;background-color: #fff;border-radius: 4px;position: absolute;top: 10px;left: 5px;}
+        .gift-ribbon-vertical {width: 4px;height: 35px;background-color: #ffcc00;position: absolute;top: 2px;left: 18px;}
+        .gift-ribbon-horizontal {width: 30px;height: 4px;background-color: #ffcc00;position: absolute;top: 18px;left: 5px;}
+        .gift-bow {width: 8px;height: 8px;background-color: #ffcc00;border-radius: 50%;position: absolute;top: 2px;left: 16px;}
+        .gift-bow::after {content: '';width: 8px;height: 8px;background-color: #ffcc00;border-radius: 50%;position: absolute;left: 8px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>福利中心</h1>
+            <div class="current-time">
+                当前时间：<span id="realTime"></span>
+            </div>
+            <button class="back-btn" onclick="window.location.href='A现代养成游戏-我是“权”能王主界面.htm'">返回主界面</button>
+        </div>
+        <div class="welfare-list">
+            <!-- 每日签到 -->
+            <div class="welfare-item">
+                <div class="welfare-icon">
+                    <div class="calendar-icon">
+                        <div class="calendar-body">
+                            <div class="calendar-header"></div>
+                            <div class="calendar-date">1</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="welfare-info">
+                    <div class="welfare-title">每日签到</div>
+                    <div class="welfare-desc">每日登录即可领取，奖励：金币+5000，随机属性+15</div>
+                </div>
+                <button class="welfare-btn" id="signBtn" onclick="getWelfare('sign', this)">立即领取</button>
+                <span class="cd-text" id="signCd"></span>
+            </div>
+            <!-- 在线奖励 -->
+            <div class="welfare-item">
+                <div class="welfare-icon">
+                    <div class="alarm-icon">
+                        <div class="alarm-circle"></div>
+                        <div class="alarm-hand-hour"></div>
+                        <div class="alarm-hand-minute"></div>
+                        <div class="alarm-bell"></div>
+                    </div>
+                </div>
+                <div class="welfare-info">
+                    <div class="welfare-title">在线奖励</div>
+                    <div class="welfare-desc">累计在线5分钟领取，奖励：金币+3000，人气+20</div>
+                </div>
+                <button class="welfare-btn" id="onlineBtn" onclick="getWelfare('online', this)">立即领取</button>
+                <span class="cd-text" id="onlineCd"></span>
+            </div>
+            <!-- 任务奖励 -->
+            <div class="welfare-item">
+                <div class="welfare-icon">
+                    <div class="success-icon">
+                        <div class="success-circle"></div>
+                        <div class="success-check"></div>
+                    </div>
+                </div>
+                <div class="welfare-info">
+                    <div class="welfare-title">任务奖励</div>
+                    <div class="welfare-desc">完成本周任务领取，奖励：金币+10000，全属性+10</div>
+                </div>
+                <button class="welfare-btn" id="taskBtn" onclick="getWelfare('task', this)">立即领取</button>
+                <span class="cd-text" id="taskCd"></span>
+            </div>
+            <!-- 福利礼包 -->
+            <div class="welfare-item">
+                <div class="welfare-icon">
+                    <div class="gift-icon">
+                        <div class="gift-box"></div>
+                        <div class="gift-ribbon-vertical"></div>
+                        <div class="gift-ribbon-horizontal"></div>
+                        <div class="gift-bow"></div>
+                    </div>
+                </div>
+                <div class="welfare-info">
+                    <div class="welfare-title">福利礼包</div>
+                    <div class="welfare-desc">每小时可领取一次，奖励：金币+2000，随机属性+8</div>
+                </div>
+                <button class="welfare-btn" id="giftBtn" onclick="getWelfare('gift', this)">立即领取</button>
+                <span class="cd-text" id="giftCd"></span>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 初始化数据
+        let currentCoin = parseInt(localStorage.getItem('currentCoin')) || 8765920;
+        let characterAttrs = JSON.parse(localStorage.getItem('characterAttrs')) || {
+            programming: 120,
+            eloquence: 150,
+            medical: 90,
+            physical: 180,
+            inspiration: 230,
+            popularity: 2634
+        };
+        // 福利冷却存储
+        let welfareCd = JSON.parse(localStorage.getItem('welfareCd')) || {
+            sign: 0,
+            online: 0,
+            task: 0,
+            gift: 0
+        };
+        // 页面加载时检查冷却
+        window.onload = function() {
+            checkAllCd();
+            // 在线奖励计时（5分钟）
+            const onlineCd = welfareCd.online;
+            const now = Date.now();
+            if (onlineCd === 0) {
+                document.getElementById('onlineBtn').disabled = true;
+                document.getElementById('onlineCd').innerText = '需在线5分钟';
+                const onlineTimer = setTimeout(() => {
+                    document.getElementById('onlineBtn').disabled = false;
+                    document.getElementById('onlineCd').innerText = '';
+                }, 300000); // 5分钟=300000毫秒
+            }
+            // 初始化实时时间显示
+            updateRealTime();
+            setInterval(updateRealTime, 1000);
+        };
+        
+        // 实时更新时间
+        function updateRealTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const minute = String(now.getMinutes()).padStart(2, '0');
+            const second = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('realTime').innerText = `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+        }
+        
+        // 领取福利逻辑
+        function getWelfare(type, btnElem) {
+            const now = Date.now();
+            const cdElem = document.getElementById(`${type}Cd`);
+            // 检查冷却
+            if (welfareCd[type] > now) {
+                const leftTime = Math.ceil((welfareCd[type] - now) / 1000);
+                alert(`福利未冷却完成，还需${leftTime}秒`);
+                return;
+            }
+            // 不同福利配置
+            const welfareConfig = {
+                sign: {
+                    coin: 5000,
+                    cd: 86400000, // 24小时
+                    desc: '每日签到',
+                    attrType: 'random',
+                    attrAdd: 15
+                },
+                online: {
+                    coin: 3000,
+                    cd: 3600000, // 1小时
+                    desc: '在线奖励',
+                    attrType: 'fixed',
+                    attrKey: 'popularity',
+                    attrAdd: 20
+                },
+                task: {
+                    coin: 10000,
+                    cd: 604800000, // 7天
+                    desc: '任务奖励',
+                    attrType: 'all',
+                    attrAdd: 10
+                },
+                gift: {
+                    coin: 2000,
+                    cd: 3600000, // 1小时
+                    desc: '福利礼包',
+                    attrType: 'random',
+                    attrAdd: 8
+                }
+            };
+            const config = welfareConfig[type];
+            // 加金币
+            currentCoin += config.coin;
+            localStorage.setItem('currentCoin', currentCoin);
+            // 加属性
+            let attrTips = '';
+            if (config.attrType === 'random') {
+                const attrKeys = Object.keys(characterAttrs);
+                const randomKey = attrKeys[Math.floor(Math.random() * attrKeys.length)];
+                characterAttrs[randomKey] += config.attrAdd;
+                attrTips = `${getAttrName(randomKey)}+${config.attrAdd}`;
+            } else if (config.attrType === 'fixed') {
+                characterAttrs[config.attrKey] += config.attrAdd;
+                attrTips = `${getAttrName(config.attrKey)}+${config.attrAdd}`;
+            } else if (config.attrType === 'all') {
+                for (const key in characterAttrs) {
+                    characterAttrs[key] += config.attrAdd;
+                }
+                attrTips = `全属性+${config.attrAdd}`;
+            }
+            localStorage.setItem('characterAttrs', JSON.stringify(characterAttrs));
+            // 设置冷却
+            welfareCd[type] = now + config.cd;
+            localStorage.setItem('welfareCd', JSON.stringify(welfareCd));
+            // 提示
+            alert(`领取${config.desc}成功！金币+${config.coin}，${attrTips}`);
+            // 按钮冷却显示
+            btnElem.disabled = true;
+            startCdCountdown(type, config.cd, btnElem, cdElem);
+        }
+        
+        // 检查所有福利冷却
+        function checkAllCd() {
+            const now = Date.now();
+            const types = ['sign', 'online', 'task', 'gift'];
+            types.forEach(type => {
+                const cd = welfareCd[type];
+                const btnElem = document.getElementById(`${type}Btn`);
+                const cdElem = document.getElementById(`${type}Cd`);
+                if (cd > now) {
+                    btnElem.disabled = false;
+                    startCdCountdown(type, cd - now, btnElem, cdElem);
+                } else {
+                    btnElem.disabled = false;
+                    cdElem.innerText = '';
+                }
+            });
+        }
+        
+        // 冷却倒计时
+        function startCdCountdown(type, cd, btnElem, cdElem) {
+            let leftTime = Math.ceil(cd / 1000);
+            updateCdText(leftTime, cdElem);
+            const timer = setInterval(() => {
+                leftTime--;
+                if (leftTime <= 0) {
+                    clearInterval(timer);
+                    btnElem.disabled = false;
+                    cdElem.innerText = '';
+                    welfareCd[type] = 0;
+                    localStorage.setItem('welfareCd', JSON.stringify(welfareCd));
+                } else {
+                    updateCdText(leftTime, cdElem);
+                }
+            }, 1000);
+        }
+        
+        // 格式化冷却时间文本
+        function updateCdText(seconds, cdElem) {
+            let text = '';
+            if (seconds >= 86400) {
+                text = `${Math.floor(seconds / 86400)}天`;
+            } else if (seconds >= 3600) {
+                text = `${Math.floor(seconds / 3600)}小时`;
+            } else if (seconds >= 60) {
+                text = `${Math.floor(seconds / 60)}分钟`;
+            } else {
+                text = `${seconds}秒`;
+            }
+            cdElem.innerText = `剩余${text}`;
+        }
+        
+        // 属性名称映射
+        function getAttrName(key) {
+            const map = {
+                programming: '编程',
+                eloquence: '口才',
+                medical: '医术',
+                physical: '体能',
+                inspiration: '灵感',
+                popularity: '人气'
+            };
+            return map[key] || key;
+        }
+    </script>
+</body>
+</html>

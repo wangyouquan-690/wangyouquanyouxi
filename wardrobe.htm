@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>百变忘忧泉-换衣间</title>
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
+        body {background-color: #f0f0f0;padding: 20px;}
+        .main-container {position: relative;width: 1280px;height: auto;min-height: 800px;margin: 0 auto;background-image: url("换衣间更新框架.jpg");background-size: cover;background-repeat: no-repeat;padding: 20px;border-radius: 10px;}
+        .top-coin-display {position: absolute;top: 20px;left: 20px;z-index: 10;background-color: rgba(0,0,0,0.5);color: #fff;padding: 8px 15px;border-radius: 5px;font-size: 18px;font-weight: bold;}
+        .wardrobe-container {width: 1280px;margin: 0 0 0 -20px;background-color: rgba(255,255,255,0.9);padding: 30px;border-radius: 10px;box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+        .title {font-size: 28px;font-weight: bold;color: #333;margin-bottom: 30px;text-align: center;}
+        .music-control {position: absolute;top: 20px;right: 20px;z-index: 10;}
+        #musicIcon {width: 96px;height: 85px;cursor: pointer;display: block;}
+        #bgMusic {display: none;}
+        .costume-list {display: flex;gap: 40px;flex-wrap: wrap;justify-content: center;margin-bottom: 30px;}
+        .costume-item {text-align: center;width: 200px;position: relative;}
+        .costume-img {width: 180px;height: 220px;object-fit: cover;border: 2px solid #eee;border-radius: 5px;margin-bottom: 15px;cursor: pointer;}
+        .costume-img:hover {border-color: #007bff;}
+        .costume-info {margin-bottom: 10px;}
+        .costume-name {font-size: 18px;font-weight: bold;color: #333;}
+        .costume-price {font-size: 16px;color: #ff4400;}
+        .owned-count {font-size: 14px;color: #28a745;margin-bottom: 5px;}
+        .btn-group {display: flex;gap: 8px;justify-content: center;}
+        .costume-btn {width: 90px;height: 35px;border: none;border-radius: 5px;color: #fff;font-size: 14px;cursor: pointer;}
+        .buy-btn {background-color: #007bff;}
+        .buy-btn:hover {background-color: #0056b3;}
+        .wear-btn {background-color: #28a745;}
+        .wear-btn:hover {background-color: #218838;}
+        .wear-btn.active {background-color: #ff9900;}
+        .wear-btn:disabled {background-color: #ccc;cursor: not-allowed;}
+        .back-btn {display: block;width: 150px;height: 40px;line-height: 40px;text-align: center;background-color: #28a745;color: #fff;text-decoration: none;border-radius: 5px;margin: 0 auto;font-size: 16px;border: none;cursor: pointer;}
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="top-coin-display">剩余金币：<span id="wardrobeCoin">8765920</span></div>
+        <div class="music-control">
+            <audio id="bgMusic" src="My Heart Will Go On(DJ)-42换装背景音乐.mp3" loop></audio>
+            <img src="音乐播放键720.png" alt="播放音乐" id="musicIcon">
+        </div>
+        <div class="wardrobe-container">
+            <h1 class="title">百变忘忧泉-换衣间</h1>
+            <div class="costume-list">
+                <!-- 初始服装 -->
+                <div class="costume-item" data-type="init" data-src="D:/忘忧泉小程序实验室/作家+初始原形态的忘忧泉（2）.png">
+                    <img src="作家+初始原形态的忘忧泉.png" alt="初始作家装" class="costume-img">
+                    <div class="costume-info">
+                        <div class="costume-name">初始作家装</div>
+                        <div class="owned-count">已拥有：1件（默认）</div>
+                        <div class="costume-price">已拥有（免费）</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="costume-btn wear-btn" onclick="wearCostume('init')">穿戴</button>
+                    </div>
+                </div>
+                <!-- 医生服装 -->
+                <div class="costume-item" data-type="doctor" data-src="D:/忘忧泉小程序实验室/医生服装-忘忧泉.png" data-price="5000">
+                    <img src="医生忘忧泉2.png" alt="医生服装" class="costume-img">
+                    <div class="costume-info">
+                        <div class="costume-name">医生服装</div>
+                        <div class="owned-count">已拥有：<span class="count-num" data-type="doctor">0</span>件</div>
+                        <div class="costume-price">价格：5000金币</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="costume-btn buy-btn" onclick="buyCostume('doctor')">购买</button>
+                        <button class="costume-btn wear-btn" onclick="wearCostume('doctor')" disabled>穿戴</button>
+                    </div>
+                </div>
+                <!-- 运动服装 -->
+                <div class="costume-item" data-type="sport" data-src="D:/忘忧泉小程序实验室/运动装-忘忧泉.png" data-price="8000">
+                    <img src="运动员忘忧泉2.png" alt="运动装" class="costume-img">
+                    <div class="costume-info">
+                        <div class="costume-name">运动服装</div>
+                        <div class="owned-count">已拥有：<span class="count-num" data-type="sport">0</span>件</div>
+                        <div class="costume-price">价格：8000金币</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="costume-btn buy-btn" onclick="buyCostume('sport')">购买</button>
+                        <button class="costume-btn wear-btn" onclick="wearCostume('sport')" disabled>穿戴</button>
+                    </div>
+                </div>
+                <!-- 明星服装 -->
+                <div class="costume-item" data-type="star" data-src="D:/忘忧泉小程序实验室/出道装-忘忧泉.png" data-price="12000">
+                    <img src="明星忘忧泉2.png" alt="明星装" class="costume-img">
+                    <div class="costume-info">
+                        <div class="costume-name">明星服装</div>
+                        <div class="owned-count">已拥有：<span class="count-num" data-type="star">0</span>件</div>
+                        <div class="costume-price">价格：12000金币</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="costume-btn buy-btn" onclick="buyCostume('star')">购买</button>
+                        <button class="costume-btn wear-btn" onclick="wearCostume('star')" disabled>穿戴</button>
+                    </div>
+                </div>
+                <!-- 程序员装 -->
+                <div class="costume-item" data-type="coder" data-src="D:/忘忧泉小程序实验室/代码装-忘忧泉.png" data-price="35000">
+                    <img src="程序员忘忧泉2.png" alt="程序员装" class="costume-img">
+                    <div class="costume-info">
+                        <div class="costume-name">程序员装</div>
+                        <div class="owned-count">已拥有：<span class="count-num" data-type="coder">0</span>件</div>
+                        <div class="costume-price">价格：35000金币</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="costume-btn buy-btn" onclick="buyCostume('coder')">购买</button>
+                        <button class="costume-btn wear-btn" onclick="wearCostume('coder')" disabled>穿戴</button>
+                    </div>
+                </div>
+                <!-- 商人装 -->
+                <div class="costume-item" data-type="merchant" data-src="D:/忘忧泉小程序实验室/商人装-忘忧泉.png" data-price="60000">
+                    <img src="商人忘忧泉2.png" alt="商人装" class="costume-img">
+                    <div class="costume-info">
+                        <div class="costume-name">商人装</div>
+                        <div class="owned-count">已拥有：<span class="count-num" data-type="merchant">0</span>件</div>
+                        <div class="costume-price">价格：60000金币</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="costume-btn buy-btn" onclick="buyCostume('merchant')">购买</button>
+                        <button class="costume-btn wear-btn" onclick="wearCostume('merchant')" disabled>穿戴</button>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn" onclick="window.location.href='A现代养成游戏-我是“权”能王主界面.htm'">返回客厅</button>
+        </div>
+    </div>
+    <script>
+        // 固定存储键名（全页面统一，不可修改）
+        const STORAGE_KEYS = {
+            COIN: 'game_currentCoin',
+            OWNED_COSTUMES: 'game_ownedCostumes',
+            WEARING_SRC: 'game_wearingCostumeSrc',
+            WEARING_TYPE: 'game_wearingCostumeType'
+        };
+
+        // 服装配置（统一管理，避免路径错误）
+        const COSTUME_CONFIG = {
+            init: { src: 'D:/忘忧泉小程序实验室/作家+初始原形态的忘忧泉（2）.png', price: 0 },
+            doctor: { src: 'D:/忘忧泉小程序实验室/医生服装-忘忧泉.png', price: 5000 },
+            sport: { src: 'D:/忘忧泉小程序实验室/运动装-忘忧泉.png', price: 8000 },
+            star: { src: 'D:/忘忧泉小程序实验室/出道装-忘忧泉.png', price: 12000 },
+            coder: { src: 'D:/忘忧泉小程序实验室/代码装-忘忧泉.png', price: 35000 },
+            merchant: { src: 'D:/忘忧泉小程序实验室/商人装-忘忧泉.png', price: 60000 }
+        };
+
+        // 初始化数据（强制校验+默认值兜底）
+        let currentCoin = 0;
+        let ownedCostumes = {};
+        let wearingType = '';
+
+        // 页面加载时优先读取存储，失败则初始化
+        window.onload = function() {
+            initData();
+            renderAll();
+            initMusic();
+        };
+
+        // 初始化数据（核心：解决存储丢失）
+        function initData() {
+            // 读取金币（强制数字）
+            const coinStr = localStorage.getItem(STORAGE_KEYS.COIN);
+            currentCoin = coinStr ? parseInt(coinStr) : 8765920;
+
+            // 读取已拥有服装（强制对象格式）
+            const ownedStr = localStorage.getItem(STORAGE_KEYS.OWNED_COSTUMES);
+            if (ownedStr) {
+                try {
+                    ownedCostumes = JSON.parse(ownedStr);
+                    // 补全缺失的服装类型（避免新增服装时数据异常）
+                    for (const type in COSTUME_CONFIG) {
+                        if (ownedCostumes[type] === undefined) {
+                            ownedCostumes[type] = type === 'init' ? 1 : 0;
+                        }
+                    }
+                } catch (e) {
+                    // 解析失败则重置
+                    ownedCostumes = { init: 1, doctor: 0, sport: 0, star: 0, coder: 0, merchant: 0 };
+                }
+            } else {
+                ownedCostumes = { init: 1, doctor: 0, sport: 0, star: 0, coder: 0, merchant: 0 };
+            }
+
+            // 读取当前穿戴类型
+            wearingType = localStorage.getItem(STORAGE_KEYS.WEARING_TYPE) || 'init';
+        }
+
+        // 渲染所有UI
+        function renderAll() {
+            // 渲染金币
+            document.getElementById('wardrobeCoin').innerText = currentCoin;
+
+            // 渲染已拥有数量
+            document.querySelectorAll('.count-num').forEach(elem => {
+                const type = elem.dataset.type;
+                elem.innerText = ownedCostumes[type] || 0;
+            });
+
+            // 渲染穿戴按钮状态
+            document.querySelectorAll('.costume-item').forEach(item => {
+                const type = item.dataset.type;
+                const wearBtn = item.querySelector('.wear-btn');
+                const hasOwned = ownedCostumes[type] > 0;
+
+                wearBtn.disabled = !hasOwned;
+                if (wearingType === type) {
+                    wearBtn.classList.add('active');
+                    wearBtn.innerText = '已穿戴';
+                } else {
+                    wearBtn.classList.remove('active');
+                    wearBtn.innerText = '穿戴';
+                }
+            });
+        }
+
+        // 购买服装
+        function buyCostume(type) {
+            const config = COSTUME_CONFIG[type];
+            if (!config) return;
+
+            if (currentCoin < config.price) {
+                alert(`金币不足！需要${config.price}金币`);
+                return;
+            }
+
+            // 扣金币
+            currentCoin -= config.price;
+            localStorage.setItem(STORAGE_KEYS.COIN, currentCoin);
+
+            // 加数量
+            ownedCostumes[type] = (ownedCostumes[type] || 0) + 1;
+            localStorage.setItem(STORAGE_KEYS.OWNED_COSTUMES, JSON.stringify(ownedCostumes));
+
+            // 刷新UI
+            renderAll();
+            alert(`购买成功！已拥有${ownedCostumes[type]}件`);
+        }
+
+        // 穿戴服装（核心：跨页面同步）
+        function wearCostume(type) {
+            const config = COSTUME_CONFIG[type];
+            if (!config || ownedCostumes[type] <= 0) return;
+
+            // 存储穿戴状态（双重存储，确保主界面能读取）
+            localStorage.setItem(STORAGE_KEYS.WEARING_SRC, config.src);
+            localStorage.setItem(STORAGE_KEYS.WEARING_TYPE, type);
+            wearingType = type;
+
+            alert('穿戴成功！返回主界面将自动显示当前服装');
+            renderAll();
+        }
+
+        // 音乐控制
+        function initMusic() {
+            const icon = document.getElementById('musicIcon');
+            const music = document.getElementById('bgMusic');
+            let isPlay = false;
+            icon?.addEventListener('click', () => {
+                isPlay = !isPlay;
+                if (isPlay) {
+                    music.play().catch(err => alert('音乐播放失败：' + err));
+                    icon.src = "音乐暂停键)720.png";
+                } else {
+                    music.pause();
+                    icon.src = "音乐播放键720.png";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>家园互动</title>
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
+        body {background-color: #f0f0f0;}
+        .container {width: 1280px;height: 720px;margin: 0 auto;background-image: url("D:/忘忧泉小程序实验室/家园背景.jpg");background-size: cover;position: relative;}
+        .header {position: absolute;top: 20px;left: 20px;right: 20px;display: flex;justify-content: space-between;align-items: center;color: #fff;}
+        .back-btn {width: 120px;height: 40px;background-color: #007bff;border: none;border-radius: 8px;color: #fff;font-size: 16px;cursor: pointer;}
+        .back-btn:hover {background-color: #0056b3;}
+        
+        /* 互动主按钮 */
+        .main-interact-btn {position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);width: 200px;height: 200px;border-radius: 50%;background-color: rgba(255,255,255,0.2);display: flex;align-items: center;justify-content: center;cursor: pointer;transition: all 0.3s;}
+        .main-interact-btn:hover {background-color: rgba(255,255,255,0.4);transform: translate(-50%, -50%) scale(1.05);}
+        .main-interact-btn span {font-size: 24px;color: #fff;font-weight: bold;}
+        
+        /* 互动弹窗（默认隐藏） */
+        .interact-modal {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(0,0,0,0.7);display: none;align-items: center;justify-content: center;z-index: 10;}
+        .modal-content {width: 600px;height: 400px;background-color: #fff;border-radius: 10px;padding: 30px;display: flex;flex-wrap: wrap;gap: 20px;justify-content: center;align-items: center;}
+        .modal-option {width: 150px;height: 150px;border-radius: 50%;background-color: #28a745;display: flex;flex-direction: column;align-items: center;justify-content: center;cursor: pointer;transition: all 0.3s;}
+        .modal-option:hover {transform: scale(1.1);box-shadow: 0 0 15px rgba(0,0,0,0.2);}
+        .option-icon {width: 60px;height: 60px;margin-bottom: 10px;}
+        .option-name {font-size: 18px;color: #fff;font-weight: bold;}
+        .close-modal {position: absolute;top: 20px;right: 20px;width: 40px;height: 40px;border-radius: 50%;background-color: #ff3333;color: #fff;border: none;font-size: 20px;cursor: pointer;}
+        /* 剧情弹窗样式 */
+        .plot-modal {position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);background-color: #fff;border-radius: 10px;padding: 30px;width: 500px;z-index: 20;display: none;box-shadow: 0 0 20px rgba(0,0,0,0.3);}
+        .plot-title {font-size: 20px;font-weight: bold;margin-bottom: 15px;color: #333;text-align: center;}
+        .plot-content {font-size: 16px;line-height: 1.6;color: #666;margin-bottom: 20px;}
+        .plot-reward {background-color: #f8f9fa;padding: 15px;border-radius: 5px;margin-bottom: 20px;}
+        .plot-reward-title {font-weight: bold;color: #333;margin-bottom: 5px;}
+        .plot-btn {display: block;margin: 0 auto;width: 120px;height: 40px;background-color: #007bff;color: #fff;border: none;border-radius: 5px;font-size: 16px;cursor: pointer;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>我的专属家园</h1>
+            <button class="back-btn" onclick="window.location.href='A现代养成游戏-我是“权”能王主界面.htm'">返回主界面</button>
+        </div>
+        <!-- 主互动按钮 -->
+        <div class="main-interact-btn" onclick="openModal()">
+            <span>家园互动</span>
+        </div>
+    </div>
+    <!-- 互动弹窗 -->
+    <div class="interact-modal" id="interactModal">
+        <button class="close-modal" onclick="closeModal()">×</button>
+        <div class="modal-content">
+            <!-- 陪伴妹妹 -->
+            <div class="modal-option" onclick="interactWithSister()">
+                <div class="option-icon">
+                    <!-- 妹妹图标（CSS绘制） -->
+                    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="15" r="10" fill="#fff"/>
+                        <path d="M25 25L35 25" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M20 35L40 35" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M25 45L35 45" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="option-name">陪伴妹妹</div>
+            </div>
+            <!-- 打理花园 -->
+            <div class="modal-option" onclick="tendGarden()">
+                <div class="option-icon">
+                    <!-- 花园图标（CSS绘制） -->
+                    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="30" r="20" fill="#28a745"/>
+                        <path d="M20 25L25 15L30 25L35 15L40 25" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M25 35L30 45L35 35" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="option-name">打理花园</div>
+            </div>
+            <!-- 秘密基地 -->
+            <div class="modal-option" onclick="goToSecretBase()">
+                <div class="option-icon">
+                    <!-- 秘密基地图标（CSS绘制） -->
+                    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="15" width="40" height="30" rx="5" fill="#666"/>
+                        <path d="M20 5L30 15L40 5" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                        <rect x="25" y="25" width="10" height="15" fill="#fff"/>
+                    </svg>
+                </div>
+                <div class="option-name">秘密基地</div>
+            </div>
+        </div>
+    </div>
+    <!-- 剧情弹窗 -->
+    <div class="plot-modal" id="plotModal">
+        <div class="plot-title" id="plotTitle">温馨时刻</div>
+        <div class="plot-content" id="plotContent">剧情内容将在这里显示...</div>
+        <div class="plot-reward" id="plotReward">
+            <div class="plot-reward-title">获得奖励</div>
+            <div id="rewardContent">属性提升+X</div>
+        </div>
+        <button class="plot-btn" onclick="closePlotModal()">确定</button>
+    </div>
+    <script>
+        // 初始化属性数据
+        let characterAttrs = JSON.parse(localStorage.getItem('characterAttrs')) || {
+            programming: 120,
+            eloquence: 150,
+            medical: 90,
+            physical: 180,
+            inspiration: 230,
+            popularity: 2634
+        };
+        // 妹妹心情数据
+        let sisterMood = parseInt(localStorage.getItem('sisterMood')) || 0;
+        // 妹妹亲密度
+        let sisterIntimacy = parseInt(localStorage.getItem('sisterIntimacy')) || 0;
+        
+        // 打开互动弹窗
+        function openModal() {
+            document.getElementById('interactModal').style.display = 'flex';
+        }
+        // 关闭互动弹窗
+        function closeModal() {
+            document.getElementById('interactModal').style.display = 'none';
+        }
+        // 打开剧情弹窗
+        function openPlotModal(title, content, reward) {
+            document.getElementById('plotTitle').innerText = title;
+            document.getElementById('plotContent').innerText = content;
+            document.getElementById('rewardContent').innerText = reward;
+            document.getElementById('plotModal').style.display = 'block';
+        }
+        // 关闭剧情弹窗
+        function closePlotModal() {
+            document.getElementById('plotModal').style.display = 'none';
+            closeModal();
+        }
+        
+        // 陪伴妹妹逻辑（随机剧情）
+        function interactWithSister() {
+            // 基础剧情（亲密度<50）
+            const basicPlots = [
+                { 
+                    title: "妹妹的画作", 
+                    content: "妹妹兴高采烈地跑到你面前，举起一幅画着你们俩的蜡笔画：“哥哥/姐姐，这是我画的我们！” 你看着画中稚嫩的线条和灿烂的笑容，心中充满温暖。", 
+                    attr: "inspiration", 
+                    add: 8, 
+                    intimacy: 5 
+                },
+                { 
+                    title: "数学小老师", 
+                    content: "妹妹拿着数学作业皱着眉头来找你：“这道题我不会做...” 你耐心地一步步讲解，直到她露出恍然大悟的表情。看着她认真学习的样子，你也变得更善于表达了。", 
+                    attr: "eloquence", 
+                    add: 6, 
+                    intimacy: 3 
+                },
+                { 
+                    title: "不小心摔倒了", 
+                    content: "妹妹在院子里玩耍时不小心摔倒，膝盖擦破了皮，委屈地哭了起来。你赶紧拿出医药箱，温柔地为她消毒、包扎，还吹了吹伤口安慰她。", 
+                    attr: "medical", 
+                    add: 7, 
+                    intimacy: 4 
+                }
+            ];
+            
+            // 高级剧情（亲密度≥50）
+            const advancedPlots = [
+                { 
+                    title: "秘密分享", 
+                    content: "妹妹拉着你的手，悄悄告诉你她在学校交到了新朋友，还把自己的小秘密分享给你。这种被信任的感觉让你备受鼓舞，口才和人气都得到了提升。", 
+                    attr: "eloquence", 
+                    add: 12, 
+                    extraAttr: "popularity", 
+                    extraAdd: 15, 
+                    intimacy: 8 
+                },
+                { 
+                    title: "一起做手工", 
+                    content: "你们一起在家做手工，妹妹的奇思妙想给了你很多启发，而你灵活的双手也教会了她很多技巧。在欢声笑语中，你的灵感和编程思维都得到了锻炼。", 
+                    attr: "inspiration", 
+                    add: 10, 
+                    extraAttr: "programming", 
+                    extraAdd: 8, 
+                    intimacy: 7 
+                },
+                { 
+                    title: "户外探险", 
+                    content: "周末你们一起去附近的公园探险，妹妹精力充沛地跑在前面，你则细心地保护着她。一路上遇到的小挑战让你们的体能和医术都得到了提升。", 
+                    attr: "physical", 
+                    add: 10, 
+                    extraAttr: "medical", 
+                    extraAdd: 8, 
+                    intimacy: 9 
+                }
+            ];
+            
+            let randomPlot;
+            let rewardText;
+            
+            // 选择剧情类型
+            if (sisterIntimacy >= 50) {
+                randomPlot = advancedPlots[Math.floor(Math.random() * advancedPlots.length)];
+                // 高级剧情有额外属性奖励
+                characterAttrs[randomPlot.attr] += randomPlot.add;
+                characterAttrs[randomPlot.extraAttr] += randomPlot.extraAdd;
+                sisterIntimacy += randomPlot.intimacy;
+                rewardText = `${attrMap[randomPlot.attr]}+${randomPlot.add}，${attrMap[randomPlot.extraAttr]}+${randomPlot.extraAdd}，亲密度+${randomPlot.intimacy}`;
+            } else {
+                randomPlot = basicPlots[Math.floor(Math.random() * basicPlots.length)];
+                characterAttrs[randomPlot.attr] += randomPlot.add;
+                sisterIntimacy += randomPlot.intimacy;
+                rewardText = `${attrMap[randomPlot.attr]}+${randomPlot.add}，亲密度+${randomPlot.intimacy}`;
+            }
+            
+            // 更新妹妹心情
+            sisterMood += 20;
+            if (sisterMood > 100) sisterMood = 100;
+            
+            // 保存数据
+            localStorage.setItem('characterAttrs', JSON.stringify(characterAttrs));
+            localStorage.setItem('sisterMood', sisterMood);
+            localStorage.setItem('sisterIntimacy', sisterIntimacy);
+            
+            // 打开剧情弹窗
+            openPlotModal(randomPlot.title, randomPlot.content, rewardText);
+        }
+        
+        // 打理花园逻辑
+        function tendGarden() {
+            // 随机属性加成（体能+人气固定，额外随机1个属性）
+            const extraAttrs = ['programming', 'eloquence', 'medical', 'inspiration'];
+            const randomAttr = extraAttrs[Math.floor(Math.random() * extraAttrs.length)];
+            const randomAdd = Math.floor(Math.random() * 3) + 2; // 2-4点随机加成
+            
+            characterAttrs.physical += 5;
+            characterAttrs.popularity += 10;
+            characterAttrs[randomAttr] += randomAdd;
+            
+            // 保存数据
+            localStorage.setItem('characterAttrs', JSON.stringify(characterAttrs));
+            
+            // 提示
+            openPlotModal(
+                "花园焕新",
+                "你悉心打理了家园的花园，修剪枝叶、浇水施肥，看着姹紫嫣红的花朵，心情格外舒畅。",
+                `体能+5，人气+10，${attrMap[randomAttr]}+${randomAdd}`
+            );
+        }
+        
+        // 跳转秘密基地
+        function goToSecretBase() {
+            closeModal();
+            window.location.href = 'secretbase.htm';
+        }
+        
+        // 属性名称映射
+        const attrMap = {
+            programming: '编程',
+            eloquence: '口才',
+            medical: '医术',
+            physical: '体能',
+            inspiration: '灵感',
+            popularity: '人气'
+        };
+    </script>
+</body>
+</html>

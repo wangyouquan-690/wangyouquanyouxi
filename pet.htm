@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>宠物的专属房间</title>
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
+        body {background-color: #f0f0f0;}
+        .container {width: 1280px;height: 720px;margin: 0 auto;background-image: url("D:/忘忧泉小程序实验室/宠物房间背景.jpg");background-size: cover;position: relative;}
+        .header {position: absolute;top: 20px;left: 20px;right: 20px;display: flex;justify-content: space-between;align-items: center;color: #fff;}
+        .back-btn {width: 120px;height: 40px;background-color: #007bff;border: none;border-radius: 8px;color: #fff;font-size: 16px;cursor: pointer;}
+        .back-btn:hover {background-color: #0056b3;}
+        
+        /* 左侧属性面板 */
+        .info-panel {position: absolute;top: 80px;left: 30px;width: 220px;background-color: rgba(0,0,0,0.7);border-radius: 10px;padding: 15px;color: #fff;}
+        .info-title {font-size: 18px;font-weight: bold;margin-bottom: 12px;border-bottom: 1px solid #fff;padding-bottom: 8px;}
+        .info-item {font-size: 14px;margin: 8px 0;display: flex;justify-content: space-between;}
+        .info-item span:last-child {color: #ffeb3b;}
+        .time-gain-tip {background-color: #28a745;padding: 5px;border-radius: 4px;font-size: 12px;margin: 10px 0;line-height: 1.4;}
+        .selected-pet-tag {background-color: #ff4400;padding: 3px 8px;border-radius: 4px;font-size: 12px;margin: 10px 0;text-align: center;font-weight: bold;}
+        .pet-battle-info {margin-top: 10px;padding-top: 10px;border-top: 1px dashed #fff;}
+        .battle-info-title {font-size: 16px;font-weight: bold;margin-bottom: 8px;}
+        
+        /* 宠物卡片区域 */
+        .pets-grid {position: absolute;top: 80px;left: 280px;right: 30px;display: grid;grid-template-columns: repeat(3, 1fr);gap: 20px;}
+        .pet-card {background-color: rgba(0,0,0,0.6);border-radius: 10px;padding: 15px;text-align: center;backdrop-filter: blur(5px);cursor: pointer;transition: all 0.3s;}
+        .pet-card.active {box-shadow: 0 0 15px rgba(255,255,255,0.5);border: 2px solid #ffeb3b;}
+        .pet-avatar {width: 80px;height: 80px;margin: 0 auto 10px;border-radius: 50%;background-color: rgba(255,255,255,0.1);display: flex;align-items: center;justify-content: center;overflow: hidden;position: relative;}
+        .pet-img {width: 100%;height: 100%;object-fit: cover;}
+        
+        /* 宠物信息样式 */
+        .pet-name {font-size: 18px;color: #fff;margin-bottom: 8px;font-weight: bold;}
+        .pet-tag {font-size: 11px;padding: 2px 6px;border-radius: 8px;display: inline-block;margin-bottom: 6px;}
+        .tag-common {color: #fff;background-color: rgba(255,0,0,0.3);border: 1px solid #ff4444;}
+        .tag-advanced {color: #fff;background-color: rgba(128,0,128,0.3);border: 1px solid #d870ff;}
+        .pet-mood {font-size: 14px;color: #ffeb3b;margin-bottom: 8px;}
+        .pet-buff {font-size: 12px;color: #90ee90;margin-bottom: 10px;line-height: 1.3;}
+        .interact-group {display: flex;gap: 5px;justify-content: center;}
+        .pet-btn {flex: 1;height: 30px;border: none;border-radius: 5px;color: #fff;font-size: 11px;cursor: pointer;}
+        .feed-btn {background-color: #28a745;}
+        .play-btn {background-color: #ff9900;}
+        .clean-btn {background-color: #007bff;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>宠物的专属房间</h1>
+            <button class="back-btn" onclick="window.location.href='A现代养成游戏-我是“权”能王主界面.htm'">返回主界面</button>
+        </div>
+        <div class="info-panel">
+            <div class="info-title">当前状态</div>
+            <div class="info-item"><span>金币：</span><span id="current-coin">8731420</span>+</div>
+            <div class="info-item"><span>编程：</span><span id="attr-programming">228</span></div>
+            <div class="info-item"><span>口才：</span><span id="attr-eloquence">160</span></div>
+            <div class="info-item"><span>医术：</span><span id="attr-medical">302</span></div>
+            <div class="info-item"><span>体能：</span><span id="attr-physical">2</span></div>
+            <div class="info-item"><span>灵感：</span><span id="attr-inspiration">168</span></div>
+            <div class="info-item"><span>人气：</span><span id="attr-popularity">2664</span></div>
+            
+            <div class="time-gain-tip">
+                时间增益规则：<br>
+                • 防御力＞100 → 每分钟+5体能<br>
+                • 攻击力＞120 → 每分钟+20金币
+            </div>
+            
+            <div class="selected-pet-tag" id="selectedPetTag">选中宠物：无</div>
+            
+            <div class="pet-battle-info">
+                <div class="battle-info-title">宠物属性</div>
+                <div class="info-item"><span>攻击力：</span><span id="pet-attack">0</span></div>
+                <div class="info-item"><span>防御力：</span><span id="pet-defense">0</span></div>
+                <div class="info-item"><span>亲密度：</span><span id="pet-intimacy">0</span></div>
+                <div class="info-item"><span>当前增益：</span><span id="pet-current-buff">无</span></div>
+            </div>
+        </div>
+        <div class="pets-grid">
+            <!-- 皮卡苍 -->
+            <div class="pet-card" data-pet-id="0">
+                <div class="pet-avatar"><img src="宠物-皮卡苍.png" alt="皮卡苍" class="pet-img"></div>
+                <div class="pet-name">皮卡苍</div>
+                <div class="pet-tag tag-common">普通宠物</div>
+                <div class="pet-mood">心情：<span class="mood-val">100</span></div>
+                <div class="pet-buff">亲密度≥50 编程+10<br>≥100 编程+20</div>
+                <div class="interact-group">
+                    <button class="pet-btn feed-btn" onclick="handleInteract(0, 'feed')">喂食(800)</button>
+                    <button class="pet-btn play-btn" onclick="handleInteract(0, 'play')">玩耍</button>
+                    <button class="pet-btn clean-btn" onclick="handleInteract(0, 'clean')">清洁</button>
+                </div>
+            </div>
+            <!-- 皮卡狐狗 -->
+            <div class="pet-card" data-pet-id="1">
+                <div class="pet-avatar"><img src="宠物-皮卡狐狗.png" alt="皮卡狐狗" class="pet-img"></div>
+                <div class="pet-name">皮卡狐狗</div>
+                <div class="pet-tag tag-common">普通宠物</div>
+                <div class="pet-mood">心情：<span class="mood-val">60</span></div>
+                <div class="pet-buff">亲密度≥50 口才+10<br>≥100 口才+20</div>
+                <div class="interact-group">
+                    <button class="pet-btn feed-btn" onclick="handleInteract(1, 'feed')">喂食(700)</button>
+                    <button class="pet-btn play-btn" onclick="handleInteract(1, 'play')">玩耍</button>
+                    <button class="pet-btn clean-btn" onclick="handleInteract(1, 'clean')">清洁</button>
+                </div>
+            </div>
+            <!-- 皮卡猫 -->
+            <div class="pet-card" data-pet-id="2">
+                <div class="pet-avatar"><img src="宠物-皮卡猫.png" alt="皮卡猫" class="pet-img"></div>
+                <div class="pet-name">皮卡猫</div>
+                <div class="pet-tag tag-common">普通宠物</div>
+                <div class="pet-mood">心情：<span class="mood-val">60</span></div>
+                <div class="pet-buff">亲密度≥50 医术+10<br>≥100 医术+20</div>
+                <div class="interact-group">
+                    <button class="pet-btn feed-btn" onclick="handleInteract(2, 'feed')">喂食(750)</button>
+                    <button class="pet-btn play-btn" onclick="handleInteract(2, 'play')">玩耍</button>
+                    <button class="pet-btn clean-btn" onclick="handleInteract(2, 'clean')">清洁</button>
+                </div>
+            </div>
+            <!-- 皮卡松 -->
+            <div class="pet-card" data-pet-id="3">
+                <div class="pet-avatar"><img src="宠物-皮卡松.png" alt="皮卡松" class="pet-img"></div>
+                <div class="pet-name">皮卡松</div>
+                <div class="pet-tag tag-common">普通宠物</div>
+                <div class="pet-mood">心情：<span class="mood-val">100</span></div>
+                <div class="pet-buff">亲密度≥50 体能+10<br>≥100 体能+20</div>
+                <div class="interact-group">
+                    <button class="pet-btn feed-btn" onclick="handleInteract(3, 'feed')">喂食(650)</button>
+                    <button class="pet-btn play-btn" onclick="handleInteract(3, 'play')">玩耍</button>
+                    <button class="pet-btn clean-btn" onclick="handleInteract(3, 'clean')">清洁</button>
+                </div>
+            </div>
+            <!-- 皮卡狼 -->
+            <div class="pet-card" data-pet-id="4">
+                <div class="pet-avatar"><img src="灵宠-皮卡嗷狼.png" alt="皮卡狼" class="pet-img"></div>
+                <div class="pet-name">皮卡狼</div>
+                <div class="pet-tag tag-advanced">高级灵宠</div>
+                <div class="pet-mood">心情：<span class="mood-val">60</span></div>
+                <div class="pet-buff">亲密度≥50 灵感+15<br>≥100 灵感+30</div>
+                <div class="interact-group">
+                    <button class="pet-btn feed-btn" onclick="handleInteract(4, 'feed')">喂食(1200)</button>
+                    <button class="pet-btn play-btn" onclick="handleInteract(4, 'play')">玩耍</button>
+                    <button class="pet-btn clean-btn" onclick="handleInteract(4, 'clean')">清洁</button>
+                </div>
+            </div>
+            <!-- 皮卡蛇 -->
+            <div class="pet-card" data-pet-id="5">
+                <div class="pet-avatar"><img src="灵宠-皮卡蛇.png" alt="皮卡蛇" class="pet-img"></div>
+                <div class="pet-name">皮卡蛇</div>
+                <div class="pet-tag tag-advanced">高级灵宠</div>
+                <div class="pet-mood">心情：<span class="mood-val">60</span></div>
+                <div class="pet-buff">亲密度≥50 人气+15<br>≥100 人气+30</div>
+                <div class="interact-group">
+                    <button class="pet-btn feed-btn" onclick="handleInteract(5, 'feed')">喂食(1100)</button>
+                    <button class="pet-btn play-btn" onclick="handleInteract(5, 'play')">玩耍</button>
+                    <button class="pet-btn clean-btn" onclick="handleInteract(5, 'clean')">清洁</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 统一存储键名（与其他页面保持一致）
+        const STORAGE_KEYS = {
+            CHARACTER: 'characterAttrs',
+            COIN: 'currentCoin',
+            PETS: 'petData'
+        };
+
+        // 宠物配置表（统一管理数据）
+        const PET_CONFIG = [
+            {id:0, name:"皮卡苍", type:"common", feedCost:800, buffAttr:"programming", buffVal:10},
+            {id:1, name:"皮卡狐狗", type:"common", feedCost:700, buffAttr:"eloquence", buffVal:10},
+            {id:2, name:"皮卡猫", type:"common", feedCost:750, buffAttr:"medical", buffVal:10},
+            {id:3, name:"皮卡松", type:"common", feedCost:650, buffAttr:"physical", buffVal:10},
+            {id:4, name:"皮卡狼", type:"advanced", feedCost:1200, buffAttr:"inspiration", buffVal:15},
+            {id:5, name:"皮卡蛇", type:"advanced", feedCost:1100, buffAttr:"popularity", buffVal:15}
+        ];
+
+        // 初始化数据
+        let characterAttrs = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHARACTER)) || {
+            programming:228, eloquence:160, medical:302, physical:2, inspiration:168, popularity:2664
+        };
+        let currentCoin = parseInt(localStorage.getItem(STORAGE_KEYS.COIN)) || 8731420;
+        let petData = JSON.parse(localStorage.getItem(STORAGE_KEYS.PETS)) || PET_CONFIG.map(config => ({
+            id: config.id,
+            mood: config.id === 0 || config.id === 3 ? 100 : 60,
+            attack: 0,
+            defense: 0,
+            intimacy: 0,
+            hasBuff: false
+        }));
+        let selectedPetId = null;
+
+        // 页面加载初始化
+        window.onload = function() {
+            // 渲染初始数据
+            renderCharacterAttrs();
+            renderPetList();
+            // 绑定宠物卡片选中事件
+            document.querySelectorAll('.pet-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    selectPet(parseInt(this.dataset.petId));
+                });
+            });
+            // 启动时间增益定时器
+            setInterval(checkTimeGain, 60000);
+        };
+
+        // 渲染主角属性
+        function renderCharacterAttrs() {
+            document.getElementById('current-coin').innerText = currentCoin;
+            document.getElementById('attr-programming').innerText = characterAttrs.programming;
+            document.getElementById('attr-eloquence').innerText = characterAttrs.eloquence;
+            document.getElementById('attr-medical').innerText = characterAttrs.medical;
+            document.getElementById('attr-physical').innerText = characterAttrs.physical;
+            document.getElementById('attr-inspiration').innerText = characterAttrs.inspiration;
+            document.getElementById('attr-popularity').innerText = characterAttrs.popularity;
+        }
+
+        // 渲染宠物列表
+        function renderPetList() {
+            const petCards = document.querySelectorAll('.pet-card');
+            petCards.forEach((card, index) => {
+                const pet = petData[index];
+                card.querySelector('.mood-val').innerText = pet.mood;
+            });
+        }
+
+        // 选中宠物
+        function selectPet(petId) {
+            // 移除之前选中的样式
+            if (selectedPetId !== null) {
+                document.querySelector(`.pet-card[data-pet-id="${selectedPetId}"]`).classList.remove('active');
+            }
+            // 设置新选中
+            selectedPetId = petId;
+            const selectedCard = document.querySelector(`.pet-card[data-pet-id="${petId}"]`);
+            selectedCard.classList.add('active');
+            
+            // 渲染选中宠物的属性
+            const pet = petData[petId];
+            const config = PET_CONFIG[petId];
+            document.getElementById('selectedPetTag').innerText = `选中宠物：${config.name}`;
+            document.getElementById('pet-attack').innerText = pet.attack;
+            document.getElementById('pet-defense').innerText = pet.defense;
+            document.getElementById('pet-intimacy').innerText = pet.intimacy;
+            
+            // 渲染当前增益
+            let buffText = '无';
+            if (pet.intimacy >= 100) {
+                buffText = `${getAttrName(config.buffAttr)}+${config.buffVal * 2}`;
+            } else if (pet.intimacy >= 50) {
+                buffText = `${getAttrName(config.buffAttr)}+${config.buffVal}`;
+            }
+            document.getElementById('pet-current-buff').innerText = buffText;
+        }
+
+        // 处理宠物互动
+        function handleInteract(petId, type) {
+            const pet = petData[petId];
+            const config = PET_CONFIG[petId];
+            const isAdvanced = config.type === "advanced";
+
+            // 互动配置（区分普通/高级宠物）
+            const interactConfig = {
+                feed: {
+                    cost: config.feedCost,
+                    moodAdd: isAdvanced ? 25 : 15,
+                    attackAdd: isAdvanced ? 8 : 4,
+                    intimacyAdd: isAdvanced ? 4 : 2,
+                    costType: "coin"
+                },
+                play: {
+                    cost: isAdvanced ? 6 : 4,
+                    moodAdd: isAdvanced ? 30 : 20,
+                    defenseAdd: isAdvanced ? 5 : 2,
+                    intimacyAdd: isAdvanced ? 3 : 1,
+                    costType: "attr",
+                    costAttr: "physical"
+                },
+                clean: {
+                    cost: isAdvanced ? 4 : 2,
+                    moodAdd: isAdvanced ? 20 : 10,
+                    intimacyAdd: isAdvanced ? 3 : 1,
+                    costType: "attr",
+                    costAttr: "inspiration"
+                }
+            };
+            const cfg = interactConfig[type];
+
+            // 消耗校验
+            if (cfg.costType === "coin") {
+                if (currentCoin < cfg.cost) {
+                    alert(`金币不足！${config.name}${type === 'feed' ? '喂食' : ''}需要${cfg.cost}金币`);
+                    return;
+                }
+                currentCoin -= cfg.cost;
+            } else if (cfg.costType === "attr") {
+                if (characterAttrs[cfg.costAttr] < cfg.cost) {
+                    alert(`${getAttrName(cfg.costAttr)}不足！${config.name}${type === 'play' ? '玩耍' : '清洁'}需要≥${cfg.cost}`);
+                    return;
+                }
+                characterAttrs[cfg.costAttr] -= cfg.cost;
+            }
+
+            // 更新宠物属性
+            pet.mood = Math.min(pet.mood + cfg.moodAdd, 100);
+            if (cfg.attackAdd) pet.attack += cfg.attackAdd;
+            if (cfg.defenseAdd) pet.defense += cfg.defenseAdd;
+            pet.intimacy += cfg.intimacyAdd;
+
+            // 触发增益
+            if (pet.intimacy >= 50 && !pet.hasBuff) {
+                characterAttrs[config.buffAttr] += config.buffVal;
+                pet.hasBuff = true;
+                alert(`${config.name}亲密度达标！解锁基础增益：${getAttrName(config.buffAttr)}+${config.buffVal}`);
+            }
+            if (pet.intimacy >= 100 && pet.hasBuff) {
+                characterAttrs[config.buffAttr] += config.buffVal;
+                alert(`${config.name}亲密度满值！解锁高级增益：${getAttrName(config.buffAttr)}额外+${config.buffVal}`);
+            }
+
+            // 保存数据
+            saveData();
+            // 重新渲染
+            renderCharacterAttrs();
+            renderPetList();
+            // 如果当前选中的是该宠物，更新选中面板
+            if (selectedPetId === petId) {
+                selectPet(petId);
+            }
+
+            // 提示信息
+            const actionText = type === 'feed' ? '喂食' : type === 'play' ? '玩耍' : '清洁';
+            alert(`成功${actionText}${config.name}！\n心情+${cfg.moodAdd} 亲密度+${cfg.intimacyAdd}\n当前攻击力：${pet.attack} 防御力：${pet.defense}`);
+        }
+
+        // 检查时间增益
+        function checkTimeGain() {
+            let gainLog = [];
+            petData.forEach(pet => {
+                if (pet.attack > 120) {
+                    currentCoin += 20;
+                    gainLog.push('金币+20（攻击力达标）');
+                }
+                if (pet.defense > 100) {
+                    characterAttrs.physical += 5;
+                    gainLog.push('体能+5（防御力达标）');
+                }
+            });
+            if (gainLog.length > 0) {
+                saveData();
+                renderCharacterAttrs();
+                alert(`时间增益到账！\n${gainLog.join('\n')}`);
+            }
+        }
+
+        // 保存数据到本地存储
+        function saveData() {
+            localStorage.setItem(STORAGE_KEYS.CHARACTER, JSON.stringify(characterAttrs));
+            localStorage.setItem(STORAGE_KEYS.COIN, currentCoin);
+            localStorage.setItem(STORAGE_KEYS.PETS, JSON.stringify(petData));
+        }
+
+        // 属性名称映射
+        function getAttrName(key) {
+            const map = {
+                programming: '编程',
+                eloquence: '口才',
+                medical: '医术',
+                physical: '体能',
+                inspiration: '灵感',
+                popularity: '人气'
+            };
+            return map[key] || key;
+        }
+    </script>
+</body>
+</html>
